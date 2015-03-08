@@ -1,4 +1,4 @@
-name: setech.io
+name: qone.io
 description: my tech blog
 meta_description: "blog about tech"
 
@@ -7,9 +7,9 @@ highlighter: pygments
 logo: false
 paginate: 15
 baseurl: /
-domain_name: 'http://setech.io'
-google_analytics: 'UA-60381620-1'
+domain_name: 'http://qone.io'
+google_analytics: 'UA-60513025-1'
 
 # Details for the RSS feed generator
-url:            'setech.io'
+url:            'qone.io'
 author:         'Alexander Brandstedt'
