@@ -1,8 +1,8 @@
 ---
 layout: post
-title:  "Cold Brew Coffee"
+title:  "cold brew coffee"
 date:   2015-03-08
-categories: Coffee ColdBrew
+categories: coffee coldBrew
 ---
 
 
