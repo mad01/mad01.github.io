@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<opml version="1.0">
+    <head>
+        <title>Alexander subscriptions in feedly Cloud</title>
+    </head>
+    <body>
+        <outline text="Tech" title="Tech">
+            <outline type="rss" text="Gizmodo" title="Gizmodo" xmlUrl="http://feeds.gawker.com/gizmodo/full" htmlUrl="http://gizmodo.com"/>
+            <outline type="rss" text="JAILBREAK APPLE TV" title="JAILBREAK APPLE TV" xmlUrl="http://feeds.feedburner.com/JailbreakAppleTV" htmlUrl="http://www.jailbreakappletv.com/blog"/>
+            <outline type="rss" text="Open Source Technical Blog" title="Open Source Technical Blog" xmlUrl="http://techblog.zabuchy.net/feed/" htmlUrl="http://jmuras.com/blog"/>
+            <outline type="rss" text="CloudFlare" title="CloudFlare" xmlUrl="http://blog.cloudflare.com/rss" htmlUrl="http://blog.cloudflare.com/"/>
+            <outline type="rss" text="Daily Dot" title="Daily Dot" xmlUrl="http://www.dailydot.com/feed/summary/latest/" htmlUrl="http://www.dailydot.com/"/>
+            <outline type="rss" text="Digitizd" title="Digitizd" xmlUrl="http://www.digitizd.com/feed/" htmlUrl="http://www.digitizd.com"/>
+            <outline type="rss" text="cloud101" title="cloud101" xmlUrl="http://cloud101.eu/blog/feed/" htmlUrl="https://cloud101.eu/blog"/>
+            <outline type="rss" text="Linuxaria » Linuxaria – Everything about GNU/Linux and Open source" title="Linuxaria » Linuxaria – Everything about GNU/Linux and Open source" xmlUrl="http://linuxaria.com/feed?lang=en" htmlUrl="http://linuxaria.com"/>
+            <outline type="rss" text="Panic Blog" title="Panic Blog" xmlUrl="http://www.panic.com/blog/feed/" htmlUrl="http://www.panic.com/blog/"/>
+            <outline type="rss" text="DataGenetics" title="DataGenetics" xmlUrl="http://www.datagenetics.com/feed/rss.xml" htmlUrl="http://datagenetics.com"/>
+            <outline type="rss" text="Scientific American - Extreme Tech" title="Scientific American - Extreme Tech" xmlUrl="http://rss.sciam.com/sciam/extremetech" htmlUrl="http://www.scientificamerican.com"/>
+            <outline type="rss" text="Fortysomething Geek" title="Fortysomething Geek" xmlUrl="http://fortysomethinggeek.blogspot.com/feeds/posts/default?alt=rss" htmlUrl="http://fortysomethinggeek.blogspot.com/"/>
+            <outline type="rss" text="Geek.com" title="Geek.com" xmlUrl="http://www.geek.com/feed/" htmlUrl="http://www.geek.com"/>
+            <outline type="rss" text="TorrentFreak" title="TorrentFreak" xmlUrl="http://feeds.feedburner.com/Torrentfreak" htmlUrl="http://torrentfreak.com"/>
+            <outline type="rss" text="OS X Daily" title="OS X Daily" xmlUrl="http://osxdaily.com/feed/" htmlUrl="http://osxdaily.com"/>
+            <outline type="rss" text="Justin's IT Blog" title="Justin's IT Blog" xmlUrl="http://feeds.feedburner.com/jpaul/blog" htmlUrl="http://www.jpaul.me"/>
+            <outline type="rss" text="GeekSugar" title="GeekSugar" xmlUrl="http://www.geeksugar.com/feed" htmlUrl="http://www.popsugar.com/tech"/>
+            <outline type="rss" text="Josh Spear" title="Josh Spear" xmlUrl="http://joshspear.com/feed" htmlUrl="http://joshspear.com"/>
+            <outline type="rss" text="Bless This Stuff" title="Bless This Stuff" xmlUrl="http://feeds.feedburner.com/BlessThisStuff" htmlUrl="http://www.blessthisstuff.com"/>
+        </outline>
+        <outline text="Security updates" title="Security updates">
+            <outline type="rss" text="Debian Security" title="Debian Security" xmlUrl="http://www.debian.org/security/dsa" htmlUrl="http://security.debian.org/"/>
+        </outline>
+        <outline text="Google" title="Google">
+            <outline type="rss" text="Google Developers Blog" title="Google Developers Blog" xmlUrl="http://code.google.com/feeds/updates.xml" htmlUrl="http://googledevelopers.blogspot.com/"/>
+        </outline>
+        <outline text="devops" title="devops">
+            <outline type="rss" text="OneNote Dev Blog" title="OneNote Dev Blog" xmlUrl="http://blogs.msdn.com/b/onenotedev/rss.aspx" htmlUrl="http://blogs.msdn.com/b/onenotedev/"/>
+        </outline>
+        <outline text="Security news" title="Security news">
+            <outline type="rss" text="Darknet - The Darkside" title="Darknet - The Darkside" xmlUrl="http://feeds.feedburner.com/darknethackers" htmlUrl="http://www.darknet.org.uk"/>
+            <outline type="rss" text="Krebs on Security" title="Krebs on Security" xmlUrl="http://krebsonsecurity.com/feed/" htmlUrl="http://krebsonsecurity.com"/>
+        </outline>
+        <outline text="Testing" title="Testing">
+            <outline type="rss" text="Software Testing Blog" title="Software Testing Blog" xmlUrl="http://feeds.feedburner.com/UtestBlog" htmlUrl="http://blog.utest.com"/>
+            <outline type="rss" text="QA Intelligence" title="QA Intelligence" xmlUrl="http://feeds.feedburner.com/QA-Intelligence-a-QABlog" htmlUrl="http://qablog.practitest.com"/>
+            <outline type="rss" text="Adventures in QA" title="Adventures in QA" xmlUrl="http://dnlkntt.wordpress.com/feed/" htmlUrl="http://adventuresinqa.com"/>
+            <outline type="rss" text="Evil Tester" title="Evil Tester" xmlUrl="http://www.eviltester.com/index.php/feed/rss/" htmlUrl="http://blog.eviltester.com/"/>
+            <outline type="rss" text="Developsense Blog" title="Developsense Blog" xmlUrl="http://www.developsense.com/blog/atom.xml" htmlUrl="http://www.developsense.com/blog"/>
+            <outline type="rss" text="Ministry of Testing" title="Ministry of Testing" xmlUrl="http://feeds.feedburner.com/MinistryOfTesting" htmlUrl="http://www.ministryoftesting.com"/>
+            <outline type="rss" text="StickyMinds" title="StickyMinds" xmlUrl="http://feeds.feedburner.com/AllStickyMindsFeeds" htmlUrl="http://www.stickyminds.com/rss-cmcrossroads"/>
+            <outline type="rss" text="Test This Blog" title="Test This Blog" xmlUrl="http://www.testthisblog.com/feeds/posts/default" htmlUrl="http://www.testthisblog.com/"/>
+            <outline type="rss" text="Agile Testing" title="Agile Testing" xmlUrl="http://agiletesting.blogspot.com/feeds/posts/default" htmlUrl="http://agiletesting.blogspot.com/"/>
+            <outline type="rss" text="Google Testing Blog" title="Google Testing Blog" xmlUrl="http://googletesting.blogspot.com/feeds/posts/default" htmlUrl="http://googletesting.blogspot.com/"/>
+        </outline>
+    </body>
+</opml>
