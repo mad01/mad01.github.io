@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"
+  xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/">
+  <channel>
+    <title>qone.io</title>
+    <link>qone.io</link>
+    <description>my tech blog</description>
+    <pubDate>Mon, 09 Mar 2015 00:00:00 +0100</pubDate>
+    <item>
+      <title>stay up to date with tech</title>
+      <link>qone.io/tech/news/2015/03/09/stay-up-tp-date-with-tech.html</link>
+      <description>&lt;p&gt;Keeping up with tech. I like read and be aware of what is going on in tech, security, apple, linux, development, testing, and some devops related topics. I have attached a &lt;code&gt;OPML&lt;/code&gt; file from my &lt;a href=&quot;https://feedly.com&quot;&gt;feedly&lt;/a&gt; where i get most of my news if your interested. I am frequently listening to a few podcasts, I&amp;#39;m using a awesome podcast iPhone` app &lt;a href=&quot;https://overcast.fm/&quot;&gt;overcast&lt;/a&gt; to litsen. The smart speed saves some time, voice boost helps to boost the voice those is the features i think it best for me. &lt;/p&gt;
+</description>
+      <pubDate>Mon, 09 Mar 2015 00:00:00 +0100</pubDate>
+      <dc:date>2015-03-09T00:00:00+01:00</dc:date>
+    </item>
+    <item>
+      <title>cold brew coffee</title>
+      <link>qone.io/coffee/coldbrew/2015/03/08/cold-brew-coffee.html</link>
+      <description>&lt;p&gt;Brew some easy and good cold brew coffee. This can be used for just plain ice coffee, ice latte, and many more. A note it that it will be high in caffeine. What you need is. &lt;/p&gt;
+</description>
+      <pubDate>Sun, 08 Mar 2015 00:00:00 +0100</pubDate>
+      <dc:date>2015-03-08T00:00:00+01:00</dc:date>
+    </item>
+    <item>
+      <title>control temptation @ work</title>
+      <link>qone.io/temptation/2015/03/04/control-temptation-at-work.html</link>
+      <description>&lt;p&gt;So what do i mean with &lt;code&gt;control temptation @ work&lt;/code&gt;. When working with development you have to get it to a problem and try to solve it. Doing that requires that you can stay focused on the task in hand to get the most out of it. Lets say you take 10 - 15 min to get it to the right flow. During your day you have email, facebook, online newspapers, chat systems like &lt;code&gt;IRC&lt;/code&gt;, &lt;code&gt;HipChat&lt;/code&gt;, &lt;code&gt;Skype&lt;/code&gt;, colleagues and many others things that can make you get out of your productive flow. The result of this will mean for every time you lose the 10 - 15 min to get in to the productive flow, over and over. And you may end up at the end of that day and realizing that you did not get done with what you wanted. That is not fun for anyone. &lt;/p&gt;
+</description>
+      <pubDate>Wed, 04 Mar 2015 00:00:00 +0100</pubDate>
+      <dc:date>2015-03-04T00:00:00+01:00</dc:date>
+    </item>
+    <dc:date>2015-03-09T00:00:00+01:00</dc:date>
+  </channel>
+</rss>
