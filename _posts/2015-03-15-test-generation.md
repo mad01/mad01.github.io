@@ -5,7 +5,7 @@ date:   2015-03-15
 categories: testing python
 ---
 
-I what to show a api template i did to generate api post tests with a random varible lenght hex value as the payload in a http post request. In this case i am using python, in compination with [nose](https://nose.readthedocs.org), to run my tests. Note you can run this without nose but you will get all prints from the support libs. Nose will supress the prints if the test passes. To change to varible number of tests that you can generate you just change the `random_data input integer. The purpose of this is to be able to check that a REST api can take the random input length of the hex payload. in the testmap you gets a dict that contains a random, int, float, hex, password. 
+I what to show a api template i did to generate api post tests with a random varible lenght hex value as the payload in a http post request. In this case i am using python, in compination with [nose](https://nose.readthedocs.org), to run my tests. Note you can run this without nose but you will get all prints from the support libs. Nose will supress the prints if the test passes. To change to varible number of tests that you can generate you just change the `random_data` input integer. The purpose of this is to be able to check that a REST api can take the random input length of the hex payload. in the testmap you gets a dict that contains a random, int, float, hex, password. 
 
 {% highlight python %}
 class TestGenClass(unittest.TestCase):
