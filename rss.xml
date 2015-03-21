@@ -8,14 +8,22 @@
     <title>qone.io</title>
     <link>qone.io</link>
     <description>my tech blog</description>
-    <pubDate>Sat, 14 Mar 2015 00:00:00 +0100</pubDate>
+    <pubDate>Fri, 20 Mar 2015 00:00:00 +0100</pubDate>
+    <item>
+      <title>pitfalls when writing commandline tools</title>
+      <link>qone.io/command/line/tools/2015/03/20/command-line-tools-pitfalls.html</link>
+      <description>&lt;p&gt;Common pitfalls when using template files/support files in the working dir of the script, is easy to miss when you are writing command line tools. In this case using &lt;code&gt;python&lt;/code&gt;. Some of the more annoying mistakes is when you have template files stores and referred to in a script, you assume that the person that will use you script stands in the folder were the script is. lest assume that we are using a file template.html in a folder named foobar. of corse this will not work if you are running the script from somewhere else. I normally stand in the same folder as the script when i am developing a tool. When you then stand in some other folder everything will fail since you are not giving the absolute path to the template files. &lt;/p&gt;
+</description>
+      <pubDate>Fri, 20 Mar 2015 00:00:00 +0100</pubDate>
+      <dc:date>2015-03-20T00:00:00+01:00</dc:date>
+    </item>
     <item>
       <title>dynamic test generation</title>
-      <link>qone.io/testing/python/2015/03/14/test-generation.html</link>
-      <description>&lt;p&gt;I what to show a api template i did to generate api post tests with a random varible lenght hex value as the payload in a http post request. In this case i am using python, in compination with &lt;a href=&quot;https://nose.readthedocs.org&quot;&gt;nose&lt;/a&gt;, to run my tests. Note you can run this without nose but you will get all prints from the support libs. Nose will supress the prints if the test passes. To change to varible number of tests that you can generate you just change the `random_data input integer. The purpose of this is to be able to check that a REST api can take the random input length of the hex payload. in the testmap you gets a dict that contains a random, int, float, hex, password. &lt;/p&gt;
+      <link>qone.io/testing/python/2015/03/15/test-generation.html</link>
+      <description>&lt;p&gt;I what to show a api template i did to generate api post tests with a random varible lenght hex value as the payload in a http post request. In this case i am using python, in compination with &lt;a href=&quot;https://nose.readthedocs.org&quot;&gt;nose&lt;/a&gt;, to run my tests. Note you can run this without nose but you will get all prints from the support libs. Nose will supress the prints if the test passes. To change to varible number of tests that you can generate you just change the &lt;code&gt;random_data&lt;/code&gt; input integer. The purpose of this is to be able to check that a REST api can take the random input length of the hex payload. in the testmap you gets a dict that contains a random, int, float, hex, password. &lt;/p&gt;
 </description>
-      <pubDate>Sat, 14 Mar 2015 00:00:00 +0100</pubDate>
-      <dc:date>2015-03-14T00:00:00+01:00</dc:date>
+      <pubDate>Sun, 15 Mar 2015 00:00:00 +0100</pubDate>
+      <dc:date>2015-03-15T00:00:00+01:00</dc:date>
     </item>
     <item>
       <title>stay up to date with tech</title>
@@ -41,6 +49,6 @@
       <pubDate>Wed, 04 Mar 2015 00:00:00 +0100</pubDate>
       <dc:date>2015-03-04T00:00:00+01:00</dc:date>
     </item>
-    <dc:date>2015-03-14T00:00:00+01:00</dc:date>
+    <dc:date>2015-03-20T00:00:00+01:00</dc:date>
   </channel>
 </rss>
