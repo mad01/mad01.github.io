@@ -10,9 +10,9 @@ I have recently started to use a productivity theory called `Pomodoro`. The prin
 `micro checklist` example
 {% highlight bash %}
 [] big task1
-	[] smal task1
-	[] smal task2
-	[] smal task3
+	[] small task1
+	[] small task2
+	[] small task3
 {% endhighlight %}
 
 By making a list of small task that should take less then 25 min the best is if you can fit a few in since you want to try to finish the task in the `Pomodoro` session. after each micro tank is done you can check it by adding a x inside `[X]`. The important thing here is to have the task strict enough to not have to think about what to do when you are in the `Pomodoro` session. When you are in the `Pomodoro` session you don't want do have to be interrupted since you will get out of your flow. 
