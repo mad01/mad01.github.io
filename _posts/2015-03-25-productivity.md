@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "productivity with Pomodoroi and micro checklist"
+title:  "productivity with Pomodoro and micro checklist"
 date:   2015-03-25
 categories: productivity
 ---
