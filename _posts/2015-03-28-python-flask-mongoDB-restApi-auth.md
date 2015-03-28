@@ -91,7 +91,11 @@ def validateUserKey(userObjectId, password='', mongo=''):
         host=mongo,
         database="endpoints"
     )
-    return apps.custom_app_context.verify(password, salt.get('saltedKey'))
+    valid = apps.custom_app_context.verify(
+        password,
+        salt.get('saltedKey')
+    )
+    return valid
 {% endhighlight %}
 
 
@@ -155,11 +159,19 @@ class TestRestGetCalls(unittest.TestCase):
         pass
 
     def testAccessValidKey(self):
-        httpGet = checkAccess(self.oid, password=self.key, host=self.api)
+        httpGet = checkAccess(
+            self.oid,
+            password=self.key,
+            host=self.api
+        )
         self.assertEqual(200, httpGet.status_code)
 
     def testAccessInValidKey(self):
-        httpGet = checkAccess(self.oid, password="foobar", host=self.api)
+        httpGet = checkAccess(
+            self.oid,
+            password="foobar",
+            host=self.api
+        )
         self.assertEqual(401, httpGet.status_code)
 {% endhighlight %}
 
