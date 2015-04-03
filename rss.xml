@@ -8,9 +8,17 @@
     <title>qone.io</title>
     <link>qone.io</link>
     <description>my tech blog</description>
-    <pubDate>Sat, 28 Mar 2015 00:00:00 +0100</pubDate>
+    <pubDate>Fri, 03 Apr 2015 00:00:00 +0200</pubDate>
     <item>
-      <title>Python flask rest api auth option storing in mongoDB 3.0 running on docker</title>
+      <title>bulding a debian docker base build for a flask app</title>
+      <link>qone.io/docker/debian/2015/04/03/docker_basic_build.html</link>
+      <description>&lt;p&gt;Start by pulling down a debian base build. &lt;code&gt;docker pull debian:8.0&lt;/code&gt; .Creating a &lt;code&gt;Dockerfile&lt;/code&gt; for a base build to a python flask app. based on debian 8&lt;/p&gt;
+</description>
+      <pubDate>Fri, 03 Apr 2015 00:00:00 +0200</pubDate>
+      <dc:date>2015-04-03T00:00:00+02:00</dc:date>
+    </item>
+    <item>
+      <title>python flask rest api auth option storing in mongoDB 3.0 running on docker</title>
       <link>qone.io/python/rest/docker/mongodb/2015/03/28/python-flask-mongoDB-restApi-auth.html</link>
       <description>&lt;p&gt;I have been looking on a way to auth rest api endpoints that needs to have auth. I will be using Python with flask, flask-restful, yaml, pymongo and passlib. passlib will be used to salt the password that will be stored in mondoDB. A note here is that i will be using mongoDB 3.0 which means that you have to install the un released pymongo 3.0. here is the packets and links you need. &lt;/p&gt;
 </description>
@@ -65,6 +73,6 @@
       <pubDate>Wed, 04 Mar 2015 00:00:00 +0100</pubDate>
       <dc:date>2015-03-04T00:00:00+01:00</dc:date>
     </item>
-    <dc:date>2015-03-28T00:00:00+01:00</dc:date>
+    <dc:date>2015-04-03T00:00:00+02:00</dc:date>
   </channel>
 </rss>
