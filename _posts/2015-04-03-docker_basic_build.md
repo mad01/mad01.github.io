@@ -11,7 +11,7 @@ Start by pulling down a debian base build. `docker pull debian:8.0` .Creating a 
 FROM debian:8.0
 
 RUN apt-get -y update \
-	&& apt-get upgrade -y
+	&& apt-get upgrade -y \
 	&& apt-get install -y \
 		python-setuptools \
 		python-pip
