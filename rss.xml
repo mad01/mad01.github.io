@@ -6,16 +6,16 @@
   xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/">
   <channel>
     <title>qone.io</title>
-    <link>qone.io</link>
+    <link>http://qone.io</link>
     <description>my tech blog</description>
     <pubDate>Sat, 11 Apr 2015 00:00:00 +0200</pubDate>
     <item>
       <title>html email with aws ses and boto</title>
-      <link>qone.io/amazon/aws/ses/python/boto/2015/04/11/aws-ses-python-boto.html</link>
+      <link>http://qone.io/amazon/aws/ses/python/boto/2015/04/11/aws-ses-python-boto.html</link>
       <description><![CDATA[Sending html email with amazon ses simple email service using the python module boto. 
 ]]></description>
       <pubDate>Sat, 11 Apr 2015 00:00:00 +0200</pubDate>
-      <guid>qone.io/amazon/aws/ses/python/boto/2015/04/11/aws-ses-python-boto.html</guid>
+      <guid>http://qone.io/amazon/aws/ses/python/boto/2015/04/11/aws-ses-python-boto.html</guid>
       <content:encoded><![CDATA[<p>Sending html email with amazon ses <code>simple email service</code> using the python module <a href="https://github.com/boto/boto">boto</a>. </p>
 
 <p>to be able to start using the <code>ses</code> service you need to verify two emails. The first you what is the address that you like to use to send from. The second is the one you like to receive it in. To be able to verify that addresses you need a valid address since a validation email will be sent to the address. after that is done, you can start yo use the mail addresses. At this stage you will only have a sandbox version of <code>ses</code>, you will only be able to send/receive from the verified addressed. at a later state you can request production that will open to send email to any one. When in the sandbox state of <code>ses</code> you will only have a limit of 200 emails every 24h. </p>
@@ -58,11 +58,11 @@
     </item>
     <item>
       <title>bulding a debian docker base build for a flask app</title>
-      <link>qone.io/docker/debian/2015/04/03/docker_basic_build.html</link>
+      <link>http://qone.io/docker/debian/2015/04/03/docker_basic_build.html</link>
       <description><![CDATA[Start by pulling down a debian base build. docker pull debian:8.0 .Creating a Dockerfile for a base build to a python flask app. based on debian 8
 ]]></description>
       <pubDate>Fri, 03 Apr 2015 00:00:00 +0200</pubDate>
-      <guid>qone.io/docker/debian/2015/04/03/docker_basic_build.html</guid>
+      <guid>http://qone.io/docker/debian/2015/04/03/docker_basic_build.html</guid>
       <content:encoded><![CDATA[<p>Start by pulling down a debian base build. <code>docker pull debian:8.0</code> .Creating a <code>Dockerfile</code> for a base build to a python flask app. based on debian 8</p>
 
 <div class="highlight"><pre><code class="language-docker" data-lang="docker"><span class="k">FROM</span> debian:8.0
@@ -104,11 +104,11 @@ COPY app* /opt/app
     </item>
     <item>
       <title>python flask rest api auth option storing in mongoDB 3.0 running on docker</title>
-      <link>qone.io/python/rest/docker/mongodb/2015/03/28/python-flask-mongoDB-restApi-auth.html</link>
+      <link>http://qone.io/python/rest/docker/mongodb/2015/03/28/python-flask-mongoDB-restApi-auth.html</link>
       <description><![CDATA[I have been looking on a way to auth rest api endpoints that needs to have auth. I will be using Python with flask, flask-restful, yaml, pymongo and passlib. passlib will be used to salt the password that will be stored in mondoDB. A note here is that i will be using mongoDB 3.0 which means that you have to install the un released pymongo 3.0. here is the packets and links you need. 
 ]]></description>
       <pubDate>Sat, 28 Mar 2015 00:00:00 +0100</pubDate>
-      <guid>qone.io/python/rest/docker/mongodb/2015/03/28/python-flask-mongoDB-restApi-auth.html</guid>
+      <guid>http://qone.io/python/rest/docker/mongodb/2015/03/28/python-flask-mongoDB-restApi-auth.html</guid>
       <content:encoded><![CDATA[<p>I have been looking on a way to auth rest api endpoints that needs to have auth. I will be using Python with flask, flask-restful, yaml, pymongo and passlib. passlib will be used to salt the password that will be stored in mondoDB. A note here is that i will be using mongoDB 3.0 which means that you have to install the un released pymongo 3.0. here is the packets and links you need. </p>
 
 <div class="highlight"><pre><code class="language-bash" data-lang="bash">pip install https://github.com/mongodb/mongo-python-driver/archive/3.0b1.tar.gz
@@ -264,11 +264,11 @@ docker run --name mongo -d -p 27017:27017 mongo:3.0</code></pre></div>
     </item>
     <item>
       <title>productivity with Pomodoro and micro checklist</title>
-      <link>qone.io/productivity/2015/03/25/productivity.html</link>
+      <link>http://qone.io/productivity/2015/03/25/productivity.html</link>
       <description><![CDATA[I have recently started to use a productivity theory called Pomodoro. The principe with Pomodoro is that you work focused on something for 25 min, having a micro break for 5 min and then continue. After 4 sessions you have a longer break for 15 min. I have been using this in combination with a micro checklist. What i mean with micro checklist is to have a check list like this. 
 ]]></description>
       <pubDate>Wed, 25 Mar 2015 00:00:00 +0100</pubDate>
-      <guid>qone.io/productivity/2015/03/25/productivity.html</guid>
+      <guid>http://qone.io/productivity/2015/03/25/productivity.html</guid>
       <content:encoded><![CDATA[<p>I have recently started to use a productivity theory called <code>Pomodoro</code>. The principe with Pomodoro is that you work focused on something for 25 min, having a micro break for 5 min and then continue. After 4 sessions you have a longer break for 15 min. I have been using this in combination with a <code>micro checklist</code>. What i mean with <code>micro checklist</code> is to have a check list like this. </p>
 
 <p><code>micro checklist</code> example</p>
@@ -290,11 +290,11 @@ docker run --name mongo -d -p 27017:27017 mongo:3.0</code></pre></div>
     </item>
     <item>
       <title>pitfalls when writing commandline tools</title>
-      <link>qone.io/command/line/tools/2015/03/21/command-line-tools-pitfalls.html</link>
+      <link>http://qone.io/command/line/tools/2015/03/21/command-line-tools-pitfalls.html</link>
       <description><![CDATA[Common pitfalls when using template files/support files in the working dir of the script, is easy to miss when you are writing command line tools. In this case using python. Some of the more annoying mistakes is when you have template files stores and referred to in a script, you assume that the person that will use you script stands in the folder were the script is. lest assume that we are using a file template.html in a folder named foobar. of corse this will not work if you are running the script from somewhere else. I normally stand in the same folder as the script when i am developing a tool. When you then stand in some other folder everything will fail since you are not giving the absolute path to the template files. 
 ]]></description>
       <pubDate>Sat, 21 Mar 2015 00:00:00 +0100</pubDate>
-      <guid>qone.io/command/line/tools/2015/03/21/command-line-tools-pitfalls.html</guid>
+      <guid>http://qone.io/command/line/tools/2015/03/21/command-line-tools-pitfalls.html</guid>
       <content:encoded><![CDATA[<p>Common pitfalls when using template files/support files in the working dir of the script, is easy to miss when you are writing command line tools. In this case using <code>python</code>. Some of the more annoying mistakes is when you have template files stores and referred to in a script, you assume that the person that will use you script stands in the folder were the script is. lest assume that we are using a file template.html in a folder named foobar. of corse this will not work if you are running the script from somewhere else. I normally stand in the same folder as the script when i am developing a tool. When you then stand in some other folder everything will fail since you are not giving the absolute path to the template files. </p>
 
 <p>there is a few option here and it&#39;s to either only work if you standing in the correct folder, fix the paths to work anyway, or last a install script that creates the env you need and have a static path that can be used in any system.</p>
@@ -338,11 +338,11 @@ sudo cp foo.py bar.py /usr/local/bin</code></pre></div>
     </item>
     <item>
       <title>dynamic test generation</title>
-      <link>qone.io/testing/python/2015/03/15/test-generation.html</link>
+      <link>http://qone.io/testing/python/2015/03/15/test-generation.html</link>
       <description><![CDATA[I what to show a api template i did to generate api post tests with a random varible lenght hex value as the payload in a http post request. In this case i am using python, in compination with nose, to run my tests. Note you can run this without nose but you will get all prints from the support libs. Nose will supress the prints if the test passes. To change to varible number of tests that you can generate you just change the random_data input integer. The purpose of this is to be able to check that a REST api can take the random input length of the hex payload. in the testmap you gets a dict that contains a random, int, float, hex, password. 
 ]]></description>
       <pubDate>Sun, 15 Mar 2015 00:00:00 +0100</pubDate>
-      <guid>qone.io/testing/python/2015/03/15/test-generation.html</guid>
+      <guid>http://qone.io/testing/python/2015/03/15/test-generation.html</guid>
       <content:encoded><![CDATA[<p>I what to show a api template i did to generate api post tests with a random varible lenght hex value as the payload in a http post request. In this case i am using python, in compination with <a href="https://nose.readthedocs.org">nose</a>, to run my tests. Note you can run this without nose but you will get all prints from the support libs. Nose will supress the prints if the test passes. To change to varible number of tests that you can generate you just change the <code>random_data</code> input integer. The purpose of this is to be able to check that a REST api can take the random input length of the hex payload. in the testmap you gets a dict that contains a random, int, float, hex, password. </p>
 
 <div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">TestGenClass</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
@@ -382,11 +382,11 @@ sudo cp foo.py bar.py /usr/local/bin</code></pre></div>
     </item>
     <item>
       <title>stay up to date with tech</title>
-      <link>qone.io/tech/news/2015/03/09/stay-up-tp-date-with-tech.html</link>
+      <link>http://qone.io/tech/news/2015/03/09/stay-up-tp-date-with-tech.html</link>
       <description><![CDATA[Keeping up with tech. I like read and be aware of what is going on in tech, security, apple, linux, development, testing, and some devops related topics. I have attached a OPML file from my feedly where i get most of my news if your interested. I am frequently listening to a few podcasts, I&#39;m using a awesome podcast iPhone` app overcast to litsen. The smart speed saves some time, voice boost helps to boost the voice those is the features i think it best for me. 
 ]]></description>
       <pubDate>Mon, 09 Mar 2015 00:00:00 +0100</pubDate>
-      <guid>qone.io/tech/news/2015/03/09/stay-up-tp-date-with-tech.html</guid>
+      <guid>http://qone.io/tech/news/2015/03/09/stay-up-tp-date-with-tech.html</guid>
       <content:encoded><![CDATA[<p>Keeping up with tech. I like read and be aware of what is going on in tech, security, apple, linux, development, testing, and some devops related topics. I have attached a <code>OPML</code> file from my <a href="https://feedly.com">feedly</a> where i get most of my news if your interested. I am frequently listening to a few podcasts, I&#39;m using a awesome podcast iPhone` app <a href="https://overcast.fm/">overcast</a> to litsen. The smart speed saves some time, voice boost helps to boost the voice those is the features i think it best for me. </p>
 
 <p>One of the more important areas for me is the security blogs and news one medium is the podcast <a href="https://www.grc.com/securitynow.htm">Security Now</a>. The reason for this is to be aware and understand security vulnerabilities, what you can do to patch and protect you and your systems, from the new and bad vulnerabilities that gets public mainly when related to linux and open source since that is what i am using.</p>
@@ -421,11 +421,11 @@ sudo cp foo.py bar.py /usr/local/bin</code></pre></div>
     </item>
     <item>
       <title>cold brew coffee</title>
-      <link>qone.io/coffee/coldbrew/2015/03/08/cold-brew-coffee.html</link>
+      <link>http://qone.io/coffee/coldbrew/2015/03/08/cold-brew-coffee.html</link>
       <description><![CDATA[Brew some easy and good cold brew coffee. This can be used for just plain ice coffee, ice latte, and many more. A note it that it will be high in caffeine. What you need is. 
 ]]></description>
       <pubDate>Sun, 08 Mar 2015 00:00:00 +0100</pubDate>
-      <guid>qone.io/coffee/coldbrew/2015/03/08/cold-brew-coffee.html</guid>
+      <guid>http://qone.io/coffee/coldbrew/2015/03/08/cold-brew-coffee.html</guid>
       <content:encoded><![CDATA[<p>Brew some easy and good cold brew coffee. This can be used for just plain ice coffee, ice latte, and many more. A note it that it will be high in caffeine. What you need is. </p>
 
 <ul>
@@ -443,11 +443,11 @@ sudo cp foo.py bar.py /usr/local/bin</code></pre></div>
     </item>
     <item>
       <title>control temptation @ work</title>
-      <link>qone.io/temptation/2015/03/04/control-temptation-at-work.html</link>
+      <link>http://qone.io/temptation/2015/03/04/control-temptation-at-work.html</link>
       <description><![CDATA[So what do i mean with control temptation @ work. When working with development you have to get it to a problem and try to solve it. Doing that requires that you can stay focused on the task in hand to get the most out of it. Lets say you take 10 - 15 min to get it to the right flow. During your day you have email, facebook, online newspapers, chat systems like IRC, HipChat, Skype, colleagues and many others things that can make you get out of your productive flow. The result of this will mean for every time you lose the 10 - 15 min to get in to the productive flow, over and over. And you may end up at the end of that day and realizing that you did not get done with what you wanted. That is not fun for anyone. 
 ]]></description>
       <pubDate>Wed, 04 Mar 2015 00:00:00 +0100</pubDate>
-      <guid>qone.io/temptation/2015/03/04/control-temptation-at-work.html</guid>
+      <guid>http://qone.io/temptation/2015/03/04/control-temptation-at-work.html</guid>
       <content:encoded><![CDATA[<p>So what do i mean with <code>control temptation @ work</code>. When working with development you have to get it to a problem and try to solve it. Doing that requires that you can stay focused on the task in hand to get the most out of it. Lets say you take 10 - 15 min to get it to the right flow. During your day you have email, facebook, online newspapers, chat systems like <code>IRC</code>, <code>HipChat</code>, <code>Skype</code>, colleagues and many others things that can make you get out of your productive flow. The result of this will mean for every time you lose the 10 - 15 min to get in to the productive flow, over and over. And you may end up at the end of that day and realizing that you did not get done with what you wanted. That is not fun for anyone. </p>
 
 <p>What i have done to solve this for me! Is to have most notifications on my ´iPhone´ off like facebook, mail and other applications that may have possible notifications during the day. On my work laptop i have turned off mail notifications since i dont need to check every mail that pops up in the notifications window right away. I have delibretly not signed in and saved my login to facebook and other sites since i will have a hurdle to have to signs in. That will make me think do i really need to check this now NO. You may think what about the colleagues and all the conversations and noise that you have around you. A pair of <code>Bose quietcomfort 15</code> noise canceling headphones will help and take away most of the surounding noise that you may what to get away from to keep focus on the task in hand. </p>

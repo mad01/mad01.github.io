@@ -11,5 +11,5 @@ domain_name: 'http://qone.io'
 google_analytics: 'UA-60513025-1'
 
 # Details for the RSS feed generator
-url:            'qone.io'
+url:            'http://qone.io'
 author:         'Alexander Brandstedt'
