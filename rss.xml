@@ -8,7 +8,15 @@
     <title>qone.io</title>
     <link>qone.io</link>
     <description>my tech blog</description>
-    <pubDate>Fri, 03 Apr 2015 00:00:00 +0200</pubDate>
+    <pubDate>Sat, 11 Apr 2015 00:00:00 +0200</pubDate>
+    <item>
+      <title>html email with aws ses and boto</title>
+      <link>qone.io/amazon/aws/ses/python/boto/2015/04/11/aws-ses-python-boto.html</link>
+      <description>&lt;p&gt;Sending html email with amazon ses &lt;code&gt;simple email service&lt;/code&gt; using the python module &lt;a href=&quot;https://github.com/boto/boto&quot;&gt;boto&lt;/a&gt;. &lt;/p&gt;
+</description>
+      <pubDate>Sat, 11 Apr 2015 00:00:00 +0200</pubDate>
+      <dc:date>2015-04-11T00:00:00+02:00</dc:date>
+    </item>
     <item>
       <title>bulding a debian docker base build for a flask app</title>
       <link>qone.io/docker/debian/2015/04/03/docker_basic_build.html</link>
@@ -73,6 +81,6 @@
       <pubDate>Wed, 04 Mar 2015 00:00:00 +0100</pubDate>
       <dc:date>2015-03-04T00:00:00+01:00</dc:date>
     </item>
-    <dc:date>2015-04-03T00:00:00+02:00</dc:date>
+    <dc:date>2015-04-11T00:00:00+02:00</dc:date>
   </channel>
 </rss>
