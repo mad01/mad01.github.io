@@ -7,8 +7,81 @@
   <channel>
     <title>qone.io</title>
     <link>http://qone.io</link>
-    <description>my tech blog</description>
-    <pubDate>Sat, 18 Apr 2015 00:00:00 +0200</pubDate>
+    <description>the dev blog</description>
+    <pubDate>Fri, 24 Apr 2015 00:00:00 +0200</pubDate>
+    <item>
+      <title>docker compose with selenium</title>
+      <link>http://qone.io/docker/selenium/2015/04/24/docker-compose-selenium-hub.html</link>
+      <description><![CDATA[Running a local setup with selenium hub with Firefox and Google Chrome nodes using docker-compose .  Using docker-compose makes the setup even more convenient the using the docker --link commands. Starting and stoping the setup is just easy. Scaling up and down the number of Chrome and Firefox nodes is just a command to.
+]]></description>
+      <pubDate>Fri, 24 Apr 2015 00:00:00 +0200</pubDate>
+      <guid>http://qone.io/docker/selenium/2015/04/24/docker-compose-selenium-hub.html</guid>
+      <content:encoded><![CDATA[<p>Running a local setup with selenium hub with <code>Firefox</code> and <code>Google Chrome</code> nodes using <a href="https://github.com/docker/compose">docker-compose</a> .  Using <code>docker-compose</code> makes the setup even more convenient the using the <code>docker --link</code> commands. Starting and stoping the setup is just easy. Scaling up and down the number of Chrome and Firefox nodes is just a command to.</p>
+
+<p><code>docker-compose</code> builds a setup based on a compose file that is a yaml file. Creating the setup file for a selenium hub with two nodes can look like this.</p>
+
+<p>Selenium hub, the web ui is exposed on port 4444 on the docker server. If you are using a local setup in <code>OS X</code> you can get the ip with <code>boot2docker ip | pbcopy</code> . </p>
+
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">hub</span><span class="p-Indicator">:</span>
+<span class="l-Scalar-Plain">image</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">selenium/hub</span>
+<span class="l-Scalar-Plain">ports</span><span class="p-Indicator">:</span>
+<span class="p-Indicator">-</span> <span class="s">&quot;4444:4444&quot;</span></code></pre></div>
+
+<p>Firefox selenium node head less</p>
+
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">firefox</span><span class="p-Indicator">:</span>
+<span class="l-Scalar-Plain">image</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">selenium/node-firefox</span>
+<span class="l-Scalar-Plain">links</span><span class="p-Indicator">:</span>
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">hub</span>
+<span class="l-Scalar-Plain">expose</span><span class="p-Indicator">:</span>
+<span class="p-Indicator">-</span> <span class="s">&quot;5555&quot;</span></code></pre></div>
+
+<p>Google Chrome selenium node head less</p>
+
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">chrome</span><span class="p-Indicator">:</span>
+<span class="l-Scalar-Plain">image</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">selenium/node-chrome</span>
+<span class="l-Scalar-Plain">links</span><span class="p-Indicator">:</span>
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">hub</span>
+<span class="l-Scalar-Plain">expose</span><span class="p-Indicator">:</span>
+<span class="p-Indicator">-</span> <span class="s">&quot;5555&quot;</span></code></pre></div>
+
+<p>to run the setup save it to a file named <code>docker-compose.yml</code> . Stand in the same folder as the compose file. run the following command to start the setup and send it to the background. If you like to run it in foreground remove the <code>-d</code> flag. If you don’t have the images <code>docker-compose</code> will pull the images like normal with docker</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">jone@doe:~<span class="nv">$ </span>docker-compose up -d
+Recreating selenium_hub_1...
+Recreating selenium_firefox_1...
+Recreating selenium_chrome_1...</code></pre></div>
+
+<p>Now lets look and see if the docker images are running</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">jone@doe:~<span class="nv">$ </span> docker-compose ps
+Name Command State Ports
+----------------------------------------------------------
+selenium_chrome_1 /opt/bin/entry_point.sh Up 5555/tcp
+selenium_firefox_1 /opt/bin/entry_point.sh Up 5555/tcp
+selenium_hub_1 /opt/bin/entry_point.sh Up 0.0.0.0:4444-&gt;4444/tcp</code></pre></div>
+
+<p>Lest assume that you like to scale the number of Firefox and Chrome nodes to two of each. You can use the <code>scale</code> command with <code>docker-compose</code> . The name of the nodes are used to scale up and down the number of docker instances that are running. </p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">jone@doe:~<span class="nv">$ </span>docker-compose scale <span class="nv">firefox</span><span class="o">=</span><span class="m">2</span> <span class="nv">chrome</span><span class="o">=</span>2
+Creating selenium_firefox_2...
+Starting selenium_firefox_2...
+Creating selenium_chrome_2...
+Starting selenium_chrome_2...</code></pre></div>
+
+<p>Now lets stop the setup. using the <code>stop</code> command with <code>docker-compose</code></p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">jone@doe:~<span class="nv">$ </span>docker-compose stop
+Stopping selenium_chrome_2...
+Stopping selenium_chrome_1...
+Stopping selenium_firefox_2...
+Stopping selenium_firefox_1...
+Stopping selenium_hub_1...</code></pre></div>
+
+<p>link to docker-compose file <a href="https://github.com/mad01/boilerplates/blob/master/docker/compose/selenium/docker-compose.yml">source</a></p>
+]]></content:encoded>
+      <dc:date>2015-04-24T00:00:00+02:00</dc:date>
+    </item>
     <item>
       <title>a theory of productivity</title>
       <link>http://qone.io/productivity/2015/04/18/theory-of-productivity.html</link>
@@ -477,6 +550,6 @@ sudo cp foo.py bar.py /usr/local/bin</code></pre></div>
 ]]></content:encoded>
       <dc:date>2015-03-04T00:00:00+01:00</dc:date>
     </item>
-    <dc:date>2015-04-18T00:00:00+02:00</dc:date>
+    <dc:date>2015-04-24T00:00:00+02:00</dc:date>
   </channel>
 </rss>
