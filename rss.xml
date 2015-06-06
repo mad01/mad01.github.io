@@ -8,7 +8,54 @@
     <title>qone.io</title>
     <link>http://qone.io</link>
     <description>the dev blog</description>
-    <pubDate>Sat, 16 May 2015 00:00:00 +0200</pubDate>
+    <pubDate>Sat, 06 Jun 2015 00:00:00 +0200</pubDate>
+    <item>
+      <title>sqlite3 in memory db for testing db functions in python</title>
+      <link>http://qone.io/testing/python/sqlite/2015/06/06/python-sqlite-testing-clean-state.html</link>
+      <description><![CDATA[designing a app to be as testable as posible. When writing a application that you like to, write unit tests the best options it to always on everything written for a application to not be dependent on that the application is running. Since if we can import a function and muck or just test the isolated function. One example on this is a database function, and a database. In this example i will use sqlite3 as a example. sqlite have a option to start the db in memory. This is something is very useful since you like to have a clean state of the database for every test. 
+]]></description>
+      <pubDate>Sat, 06 Jun 2015 00:00:00 +0200</pubDate>
+      <guid>http://qone.io/testing/python/sqlite/2015/06/06/python-sqlite-testing-clean-state.html</guid>
+      <content:encoded><![CDATA[<p>designing a app to be as testable as posible. When writing a application that you like to, write unit tests the best options it to always on everything written for a application to not be dependent on that the application is running. Since if we can import a function and muck or just test the isolated function. One example on this is a database function, and a database. In this example i will use sqlite3 as a example. sqlite have a option to start the db in memory. This is something is very useful since you like to have a clean state of the database for every test. </p>
+
+<p>Continuing with a example. In the test setup function a in memory sqlite db is created and data is imported that is needed to test some database functions. On teardown the db is closed and on the next test its recreated to have every test start in a clean state and not be dependent the order of a test. </p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">inactive</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;b&quot;</span><span class="p">,</span> <span class="s">&quot;c&quot;</span><span class="p">,</span> <span class="s">&quot;d&quot;</span><span class="p">,</span> <span class="s">&quot;e&quot;</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">db</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">&#39;:memory:&#39;</span><span class="p">)</span>
+
+    <span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="s">&quot;CREATE TABLE inactive(id INTEGER PRIMARY KEY,word TEXT)&quot;</span>
+        <span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inactive</span><span class="p">:</span>
+        <span class="n">sql</span><span class="o">.</span><span class="n">db_insert_row_inactive</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="p">,</span>
+            <span class="n">word</span><span class="o">=</span><span class="n">i</span>
+        <span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;close the db in memory to start next test in a clean state&quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></code></pre></div>
+
+<p>Looking on two example tests that is then importing a db function to add and remove rows in the inactive table. between the tests the db is recreated which makes the test start from a known state which makes it’s easier to recreate and control the what is tested.</p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">test_db_insert_row_inactive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">test_word</span> <span class="o">=</span> <span class="s">&quot;bar&quot;</span>
+    <span class="n">sql</span><span class="o">.</span><span class="n">db_insert_row_inactive</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="p">,</span> <span class="n">word</span><span class="o">=</span><span class="n">test_word</span><span class="p">)</span>
+    <span class="n">dbGet</span> <span class="o">=</span> <span class="n">sql</span><span class="o">.</span><span class="n">db_get_word_in_inactive</span><span class="p">(</span><span class="n">test_word</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">dbGet</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;word&quot;</span><span class="p">),</span> <span class="n">test_word</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">test_db_remove_row_inactive_by_word</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">sql</span><span class="o">.</span><span class="n">db_remove_word_inactive</span><span class="p">(</span><span class="s">&quot;b&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="p">)</span>
+    <span class="n">dbGet</span> <span class="o">=</span> <span class="n">sql</span><span class="o">.</span><span class="n">db_get_word_in_inactive</span><span class="p">(</span><span class="s">&quot;b&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">assertIsNone</span><span class="p">(</span><span class="n">dbGet</span><span class="p">)</span></code></pre></div>
+
+<p>The full application that is used as a example can be found here. <a href="https://github.com/mad01/url-shortener">Source</a></p>
+]]></content:encoded>
+      <dc:date>2015-06-06T00:00:00+02:00</dc:date>
+    </item>
     <item>
       <title>encrypted backup with arq amazon and s3 glacier</title>
       <link>http://qone.io/backup/arq/aws/s3/glacier/2015/05/16/backup-s3-arq.html</link>
@@ -20,13 +67,13 @@
 
 <p>I have a few different backups running all the time. a note i am a mac user and i will be relating to solutions that is working with a mac and os x. Some of them might work with other platforms like <a href="https://www.arqbackup.com/">arq</a> . I am at this moment using two offline external hard drives, with time machine, one network drive with time machine for incremental backups and <a href="http://www.code42.com/crashplan/">crashplan</a> for a online backup. What all of them have in common is that they are supporting encryption on the client side. A note is that i also relying on the os x <code>filevault</code> to encrypt my macs. I have recently taken a decision to start to use a application called <a href="https://www.arqbackup.com/">arq</a> that allows me to backup to a few different storage options like Amazon s3 and glacier, Dropbox, Google Drive, Google Cloud Storage, SFTP, DreamObjects, Microsoft OneDrive and other S3-Compatible Services. This is a few good options like you can se. What <code>arq</code> is providing that others like <a href="https://www.backblaze.com/">backblaze</a> and <a href="http://www.code42.com/crashplan/">crashplan</a> does not, is that i am relaying on a provider like amazon that have proven that they are a good cloud provider that is most likely not going to end there service any time soon.  I am also not capped in any way when using <code>Amazon</code> i can upload all the data i need in more or less line speed of my local network and ISP uplink. Since i am storing my data in <code>Amazon</code> at one datacenter i can also replicate the s3 bucket that i am using in combination with glacier to any other part of the world if i like where <code>Amazon</code> have datacenters. <code>arq</code> also provides me with client side encryption that allows my data to be encrypted before the data leaves by mac. So all the data that is stored in <code>Amazon</code> is encrypted and can’t be accessed or restored whiteout my encryption key. </p>
 
-<p>The way you setup the <code>arq</code> backup is in my case to my amazon aws account, creating a AMI for the backup. When adding a destination <code>Amazon s3 glacier</code> to backup to in <code>arq</code> i am just providing the AMI keys and <code>arq</code> will create the s3 bucket and the needed rules to move all files in to <code>glacier</code> . When selecting configuring the backup it’s a bit different from <code>crashplan</code> and <code>Time Machine</code>  where they backup the full user and you have to exclude what you don’t need backed up. That is a lot that you don’t need. In <code>arq</code> you select every folder or file that you like to backup and if you are using <code>Amazon</code> you get to select if you want the data to be stored in <code>s3</code> or <code>glacier</code> you can have the same files stored in  <code>s3</code> and <code>glacier</code> if you like. Since <code>glacier</code> are slow &quot;up to 24h” to restore you and have the files that you might need instant restore of in s3 also, you just add the same folder or files again and select s3 as the storage option. </p>
+<p>The way you setup the <code>arq</code> backup is in my case to my amazon aws account, creating a AMI for the backup. When adding a destination <code>Amazon s3 glacier</code> to backup to in <code>arq</code> i am just providing the AMI keys and <code>arq</code> will create the s3 bucket and the needed rules to move all files in to <code>glacier</code> . When selecting configuring the backup it’s a bit different from <code>crashplan</code> and <code>Time Machine</code>  where they backup the full user and you have to exclude what you don’t need backed up. That is a lot that you don’t need. In <code>arq</code> you select every folder or file that you like to backup and if you are using <code>Amazon</code> you get to select if you want the data to be stored in <code>s3</code> or <code>glacier</code> you can have the same files stored in  <code>s3</code> and <code>glacier</code> if you like. Since <code>glacier</code> are slow &quot;up to 24h&quot; to restore you and have the files that you might need instant restore of in s3 also, you just add the same folder or files again and select s3 as the storage option. </p>
 
 <p>when it comes to cost the <code>Amazon s3 glacier</code> option might not be the cheapest but it’s worth. Due to the proven reliability of the service that <code>Amazon</code> have provided over all the years as a cloud hosting provider. </p>
 
 <p>one of the biggest reason for adding a service like <code>arq</code> is that Time Machine that i have is not the most persistent it fails every now and then and needs a full backup to be created from scratch.  <code>crashplan</code> is also not that fast when it comes to restore some bigger amount of data. Using a cloud provider gives me the option to backup when ever i have a internet connection.</p>
 
-<p>what you should take away from this is that backup and encrypted versions of it is important. Even if you are not using encryptions in the backup you should at least backup to one place at home and one remote. If you aren’t doing it now it’s about time to start. You will have data loss time time and that is when the backup will be so valuable.    </p>
+<p>what you should take away from this is that backup and encrypted versions of it is important. Even if you are not using encryption in the backup you should at least backup to one place at home and one remote. If you aren’t doing it now it’s about time to start. You will have data loss time time and that is when the backup will be so valuable.    </p>
 ]]></content:encoded>
       <dc:date>2015-05-16T00:00:00+02:00</dc:date>
     </item>
@@ -618,6 +665,6 @@ sudo cp foo.py bar.py /usr/local/bin</code></pre></div>
 ]]></content:encoded>
       <dc:date>2015-03-04T00:00:00+01:00</dc:date>
     </item>
-    <dc:date>2015-05-16T00:00:00+02:00</dc:date>
+    <dc:date>2015-06-06T00:00:00+02:00</dc:date>
   </channel>
 </rss>
