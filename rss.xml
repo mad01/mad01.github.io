@@ -8,7 +8,89 @@
     <title>qone.io</title>
     <link>http://qone.io</link>
     <description>the dev blog</description>
-    <pubDate>Sat, 06 Jun 2015 00:00:00 +0200</pubDate>
+    <pubDate>Sat, 13 Jun 2015 00:00:00 +0200</pubDate>
+    <item>
+      <title>docker machine and aws in combination with ansible</title>
+      <link>http://qone.io/docker/docker-machine/ansible/aws/2015/06/13/docker-ansible-aws-docker-machine.html</link>
+      <description><![CDATA[Initial setup with ansible and docker-machine. In this case i have been using aws to run a docker host for me created with docker-machine. I had a goal to provision a ec2 box and have a few docker containers running in that ec2 vm. A note here is that the same way should work on any of the docker-machine driver there is nothing unique with aws in the way i have done this. From what i know you cant NOT use ansible on boot2docker, i have assumed that there is a full linux vm running. 
+]]></description>
+      <pubDate>Sat, 13 Jun 2015 00:00:00 +0200</pubDate>
+      <guid>http://qone.io/docker/docker-machine/ansible/aws/2015/06/13/docker-ansible-aws-docker-machine.html</guid>
+      <content:encoded><![CDATA[<p>Initial setup with ansible and <code>docker-machine</code>. In this case i have been using aws to run a docker host for me created with <code>docker-machine</code>. I had a goal to provision a ec2 box and have a few docker containers running in that ec2 vm. A note here is that the same way should work on any of the <code>docker-machine</code> driver there is nothing unique with aws in the way i have done this. From what i know you cant NOT use ansible on boot2docker, i have assumed that there is a full linux vm running. </p>
+
+<p>Since ansible is using a ssh-key i had to add that key to the <code>docker-machine</code> ec2 vm after it’s created. There is a option to run remote command line commands on a remote docker-machine driver. </p>
+
+<p>first lets create the a driver on amazon ec2. This will create a vm of the type &quot;t2.micro&quot; which is the default type on aws. If you like to change the instance type you can use this &quot;--amazonec2-instance-type&quot;</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">docker-machine create <span class="se">\</span>
+--driver amazonec2 <span class="se">\</span>
+--amazonec2-access-key &lt;key&gt; <span class="se">\</span>
+--amazonec2-secret-key &lt;key&gt; <span class="se">\</span>
+--amazonec2-subnet-id &lt;key&gt; <span class="se">\</span>
+--amazonec2-region eu-west-1 <span class="se">\</span>
+box <span class="se">\</span></code></pre></div>
+
+<p>It can look like this to add your public ssh key to the ec2 vm. I am taking the output of my public ssh key and assigning it to a variable localKey. Then running a remote command with <code>docker-machine</code> on the driver named &#39;box&#39;. The localKey variable is added to the remote box ssh authorized_keys.</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">localKey</span><span class="o">=</span><span class="k">$(</span>cat ~/.ssh/id_rsa.pub<span class="k">)</span> <span class="se">\</span>
+<span class="o">&amp;&amp;</span> docker-machine ssh box <span class="s2">&quot;echo &quot;</span><span class="nv">$localKey</span><span class="s2">&quot; &gt;&gt; .ssh/authorized_keys&quot;</span> <span class="se">\</span>
+<span class="o">&amp;&amp;</span> <span class="nb">eval</span> <span class="s2">&quot;$(docker-machine env box)&quot;</span></code></pre></div>
+
+<p>To get ansible working now i just have to add the ip of the driver. i am taking the ip of the driver box and assigns it to the variable driverIP that variable it then used to echo the ip in to the configured ansible inventory file.</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">driverIP</span><span class="o">=</span><span class="k">$(</span>docker-machine ip box<span class="k">)</span> <span class="se">\</span>
+<span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="s2">&quot;\n[box]\nroot&quot;</span>@<span class="nv">$driverIP</span> &gt;&gt; <span class="nv">$ANSIBLE_INVENTORY</span></code></pre></div>
+
+<p>Now that you have done the basic setup to be able to run ansible on the remote system. We have to install a few packets to be able to start docker with ansible. Here is a example ansible playbook. Ansible will need to have docker-py installed on the target host to be able to start docker containers. The file is saved as &quot;ansible-docker-host.yml&quot; due to a issue in pip the docker-py version had to be 1.1.0 .</p>
+
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="nn">---</span>
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">hosts</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">box</span>
+  <span class="l-Scalar-Plain">remote_user</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">root</span>
+  <span class="l-Scalar-Plain">sudo</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">yes</span>
+  <span class="l-Scalar-Plain">tasks</span><span class="p-Indicator">:</span>
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">apt install python-setuptools</span>
+      <span class="l-Scalar-Plain">apt</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">name=python-setuptools</span>
+
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">apt install python-dev</span>
+      <span class="l-Scalar-Plain">apt</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">name=python-dev</span>
+
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">apt install python-pip</span>
+      <span class="l-Scalar-Plain">apt</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">name=python-pip</span>
+
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">pip install docker-py</span>
+      <span class="l-Scalar-Plain">pip</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">name=docker-py version=1.1.0</span></code></pre></div>
+
+<p>Lets run the playbook to get the remote system installed with the needed to start docker with ansible</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">ansible-playbook ansible-docker-host.yml</code></pre></div>
+
+<p>The image used have have sshd installed username:root password:foobar. What will be done is to start a container named testing with image mad01/sshlab found on the docker hub, and the state of the docker container is started, the container port 22 will be mapped to the ec2 vm port 2222. A note here is that the docker-machine setup function will not have created a fireawall rule for that 2222 port on amazon, that is outside the scope of docker-machine atm. </p>
+
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="nn">---</span>
+<span class="p-Indicator">-</span> <span class="l-Scalar-Plain">hosts</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">box</span>
+  <span class="l-Scalar-Plain">remote_user</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">root</span>
+  <span class="l-Scalar-Plain">sudo</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">yes</span>
+  <span class="l-Scalar-Plain">tasks</span><span class="p-Indicator">:</span>
+    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">testing container</span>
+      <span class="l-Scalar-Plain">docker</span><span class="p-Indicator">:</span>
+        <span class="l-Scalar-Plain">name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">testing</span>
+        <span class="l-Scalar-Plain">image</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">mad01/sshlab</span>
+        <span class="l-Scalar-Plain">state</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">started</span>
+        <span class="l-Scalar-Plain">pull</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">always</span>
+        <span class="l-Scalar-Plain">ports</span><span class="p-Indicator">:</span>
+          <span class="p-Indicator">-</span> <span class="s">&quot;2222:22&quot;</span></code></pre></div>
+
+<p>Lets now start the docker container on the remote vm. </p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">ansible-playbook ansible-docker-start.yml</code></pre></div>
+
+<p>you can check that the docker container is running with &quot;docker ps&quot; on the local machine. to remove the aws ec2 vm you just run
+Lets now start the docker container on the remote vm. </p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">docker-machine rm box</code></pre></div>
+]]></content:encoded>
+      <dc:date>2015-06-13T00:00:00+02:00</dc:date>
+    </item>
     <item>
       <title>sqlite3 in memory db for testing db functions in python</title>
       <link>http://qone.io/testing/python/sqlite/2015/06/06/python-sqlite-testing-clean-state.html</link>
@@ -665,6 +747,6 @@ sudo cp foo.py bar.py /usr/local/bin</code></pre></div>
 ]]></content:encoded>
       <dc:date>2015-03-04T00:00:00+01:00</dc:date>
     </item>
-    <dc:date>2015-06-06T00:00:00+02:00</dc:date>
+    <dc:date>2015-06-13T00:00:00+02:00</dc:date>
   </channel>
 </rss>
