@@ -80,8 +80,7 @@ Lets now start the docker container on the remote vm.
 ansible-playbook ansible-docker-start.yml
 {% endhighlight %}
 
-you can check that the docker container is running with "docker ps" on the local machine. to remove the aws ec2 vm you just run
-Lets now start the docker container on the remote vm. 
+you can check that the docker container is running with "docker ps" on the local machine. to remove the aws ec2 vm you just run.
 {% highlight bash%}
 docker-machine rm box
 {% endhighlight %}
