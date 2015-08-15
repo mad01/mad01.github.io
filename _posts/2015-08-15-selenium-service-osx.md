@@ -87,7 +87,7 @@ $ brew install chromedriver
 {% endhighlight %}
 
 
-To make it possible to start running selenium tests on the server when using it as a Jenkins slave you need the user logged in that is running the tests. To get this working after reboot with no manual login you do the following. Open `System Preferences` > `Security & Privacy` >`Click the lock to make changes` > uncheck `Disable automatic login` . The other option is to run test remote on to this mac. 
+To make it possible to start running selenium tests on the server you need the user logged with a active workspace. To get this working after reboot with no manual login you do the following. Open `System Preferences` > `Security & Privacy` >`Click the lock to make changes` > uncheck `Disable automatic login` .
 
 
 Source [selenium.plist](https://github.com/mad01/boilerplates/blob/master/osx/selenium.plist) [chrome-install.sh](https://github.com/mad01/boilerplates/blob/master/osx/chrome-install.sh)
