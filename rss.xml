@@ -8,7 +8,84 @@
     <title>qone.io</title>
     <link>http://qone.io</link>
     <description>the dev blog</description>
-    <pubDate>Sat, 13 Jun 2015 00:00:00 +0200</pubDate>
+    <pubDate>Sat, 15 Aug 2015 00:00:00 +0200</pubDate>
+    <item>
+      <title>selenium as a service in osx</title>
+      <link>http://qone.io/testing/selenium/jenkins/osx/2015/08/15/selenium-service-osx.html</link>
+      <description><![CDATA[Setting up selenium server as a service in os x that starts on boot. What is needed is a plist service file to start and take stdout and stderr and log the output.  I will be using homebrew for install of the selenium server. in this example i have used a vagrant image of Yosemite you can find it here vagrant image. 
+]]></description>
+      <pubDate>Sat, 15 Aug 2015 00:00:00 +0200</pubDate>
+      <guid>http://qone.io/testing/selenium/jenkins/osx/2015/08/15/selenium-service-osx.html</guid>
+      <content:encoded><![CDATA[<p>Setting up selenium server as a service in os x that starts on boot. What is needed is a plist service file to start and take stdout and stderr and log the output.  I will be using homebrew for install of the selenium server. in this example i have used a vagrant image of Yosemite you can find it here <a href="http://files.dryga.com/boxes/osx-yosemite-0.2.1.box">vagrant image</a>. </p>
+
+<p>A NOTE about the OS X Licensing. 
+Apple&#39;s EULA states that you can install your copy on your actual Apple-hardware, plus up to two VMs running on your Apple-hardware. So using this box on another hardware is may be illigal and you should do it on your own risk. </p>
+
+<p>Start by installing the selenium standalone server using brew</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>brew install selenium-server-standalone</code></pre></div>
+
+<p>install java7 using brew cask</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>brew tap caskroom/versions
+<span class="nv">$ </span>brew cask install java7</code></pre></div>
+
+<p>create a plist file for the service. This is what is needed if you like to start selenium-standalone with port 4444 and logging the stdout to <code>/var/log/selenium/selenium-output.log</code> and stderr to <code>/var/log/selenium/selenium-error.log</code> . save it as selenium.plist</p>
+
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="cp">&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;</span>
+<span class="nt">&lt;plist</span> <span class="na">version=</span><span class="s">&quot;1.0&quot;</span><span class="nt">&gt;</span>
+<span class="nt">&lt;dict&gt;</span>
+        <span class="nt">&lt;key&gt;</span>Label<span class="nt">&lt;/key&gt;</span>
+        <span class="nt">&lt;string&gt;</span>selenium<span class="nt">&lt;/string&gt;</span>
+        <span class="nt">&lt;key&gt;</span>RunAtLoad<span class="nt">&lt;/key&gt;</span>
+        <span class="nt">&lt;true/&gt;</span>
+        <span class="nt">&lt;key&gt;</span>ProgramArguments<span class="nt">&lt;/key&gt;</span>
+        <span class="nt">&lt;array&gt;</span>
+                <span class="nt">&lt;string&gt;</span>/usr/local/bin/selenium-server<span class="nt">&lt;/string&gt;</span>
+                <span class="nt">&lt;string&gt;</span>-port<span class="nt">&lt;/string&gt;</span>
+                <span class="nt">&lt;string&gt;</span>4444<span class="nt">&lt;/string&gt;</span>
+        <span class="nt">&lt;/array&gt;</span>
+        <span class="nt">&lt;key&gt;</span>ServiceDescription<span class="nt">&lt;/key&gt;</span>
+        <span class="nt">&lt;string&gt;</span>Selenium Server<span class="nt">&lt;/string&gt;</span>
+        <span class="nt">&lt;key&gt;</span>StandardErrorPath<span class="nt">&lt;/key&gt;</span>
+        <span class="nt">&lt;string&gt;</span>/var/log/selenium/selenium-error.log<span class="nt">&lt;/string&gt;</span>
+        <span class="nt">&lt;key&gt;</span>StandardOutPath<span class="nt">&lt;/key&gt;</span>
+        <span class="nt">&lt;string&gt;</span>/var/log/selenium/selenium-output.log<span class="nt">&lt;/string&gt;</span>
+<span class="nt">&lt;/dict&gt;</span>
+<span class="nt">&lt;/plist&gt;</span></code></pre></div>
+
+<p>create the log folder using sudo since root will be run the service</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>sudo mkdir -p /var/log/selenium/</code></pre></div>
+
+<p>copy the selenium.plist to <code>/Library/LaunchDaemons</code> since we like it to run as a demon by the root user on boot. </p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>sudo cp selenium.plist /Library/LaunchDaemons</code></pre></div>
+
+<p>load the service in to system using <code>launchctl</code></p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>sudo launchctl bootstrap system /Library/LaunchDaemons/selenium.plist</code></pre></div>
+
+<p>bash script to install google chrome</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/bin/bash</span>
+curl -L -O <span class="s2">&quot;https://dl.google.com/chrome/mac/stable/GGRO/googlechrome.dmg&quot;</span>
+hdiutil mount -nobrowse googlechrome.dmg
+cp -R <span class="s2">&quot;/Volumes/Google Chrome/Google Chrome.app&quot;</span> /Applications
+hdiutil unmount <span class="s2">&quot;/Volumes/Google Chrome&quot;</span>
+rm googlechrome.dmg</code></pre></div>
+
+<p>install chromedriver</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>brew install chromedriver</code></pre></div>
+
+<p>To make it possible to start running selenium tests on the server when using it as a Jenkins slave you need the user logged in that is running the tests. To get this working after reboot with no manual login you do the following. Open <code>System Preferences</code> &gt; <code>Security &amp; Privacy</code> &gt;<code>Click the lock to make changes</code> &gt; uncheck <code>Disable automatic login</code> . The other option is to run test remote on to this mac. </p>
+
+<p>Source <a href="https://github.com/mad01/boilerplates/blob/master/osx/selenium.plist">selenium.plist</a> <a href="https://github.com/mad01/boilerplates/blob/master/osx/chrome-install.sh">chrome-install.sh</a></p>
+]]></content:encoded>
+      <dc:date>2015-08-15T00:00:00+02:00</dc:date>
+    </item>
     <item>
       <title>docker machine and aws in combination with ansible</title>
       <link>http://qone.io/docker/docker-machine/ansible/aws/2015/06/13/docker-ansible-aws-docker-machine.html</link>
@@ -84,8 +161,7 @@ box <span class="se">\</span></code></pre></div>
 
 <div class="highlight"><pre><code class="language-bash" data-lang="bash">ansible-playbook ansible-docker-start.yml</code></pre></div>
 
-<p>you can check that the docker container is running with &quot;docker ps&quot; on the local machine. to remove the aws ec2 vm you just run
-Lets now start the docker container on the remote vm. </p>
+<p>you can check that the docker container is running with &quot;docker ps&quot; on the local machine. to remove the aws ec2 vm you just run.</p>
 
 <div class="highlight"><pre><code class="language-bash" data-lang="bash">docker-machine rm box</code></pre></div>
 ]]></content:encoded>
@@ -747,6 +823,6 @@ sudo cp foo.py bar.py /usr/local/bin</code></pre></div>
 ]]></content:encoded>
       <dc:date>2015-03-04T00:00:00+01:00</dc:date>
     </item>
-    <dc:date>2015-06-13T00:00:00+02:00</dc:date>
+    <dc:date>2015-08-15T00:00:00+02:00</dc:date>
   </channel>
 </rss>
