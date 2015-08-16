@@ -52,7 +52,7 @@ create a plist file for the service. This is what is needed if you like to start
 {% endhighlight %}
 
 
-create the log folder using sudo since root will be run the service
+create the log folder using sudo since root will run the service
 {% highlight bash%}
 $ sudo mkdir -p /var/log/selenium/
 {% endhighlight %}
