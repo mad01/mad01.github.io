@@ -8,7 +8,31 @@
     <title>qone.io</title>
     <link>http://qone.io</link>
     <description>the dev blog</description>
-    <pubDate>Sat, 15 Aug 2015 00:00:00 +0200</pubDate>
+    <pubDate>Sun, 30 Aug 2015 00:00:00 +0200</pubDate>
+    <item>
+      <title>backup of linux vps using gsutil</title>
+      <link>http://qone.io/backup/google/gsutil/2015/08/30/backup-linux-gsutil.html</link>
+      <description><![CDATA[Backing up linux servers to google clound storage with gsutil using the storage option nearline. What is needed to do this is a google cloud accound. Start by creating a new project for backup. After that use that Project ID to configure gsutil in the next step.
+]]></description>
+      <pubDate>Sun, 30 Aug 2015 00:00:00 +0200</pubDate>
+      <guid>http://qone.io/backup/google/gsutil/2015/08/30/backup-linux-gsutil.html</guid>
+      <content:encoded><![CDATA[<p>Backing up linux servers to google clound storage with gsutil using the storage option nearline. What is needed to do this is a google cloud accound. Start by creating a new project for backup. After that use that Project ID to configure gsutil in the next step.</p>
+
+<p>start by configuring gsutil.</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>gsutil config</code></pre></div>
+
+<p>Create a nearline bucket on google clound storage. The mb flag means create bucket. the -l flag means location options is ASIA, EU, US. For more options take a look in the <a href="https://cloud.google.com/storage/docs/gsutil/commands/mb">gsutil mb doc</a></p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>gsutil mb -l EU -c nearline gs://&lt;bucket&gt;</code></pre></div>
+
+<p>Set up the backup to run ones every day by placing this script in /etc/cron.daily/. You can use the monthly weekly daily or hourly like this. The -x flag is all files that like you to be excluded from the backup and the -r flag is the src directory that you like to backup.</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/bin/bash</span>
+gsutil -qm rsync -x <span class="s1">&#39;.&lt;exclude-file&gt;|&lt;exclude-file&gt;&#39;</span> -r /&lt;src-directory&gt;  gs://&lt;bucket&gt;</code></pre></div>
+]]></content:encoded>
+      <dc:date>2015-08-30T00:00:00+02:00</dc:date>
+    </item>
     <item>
       <title>selenium as a service in osx</title>
       <link>http://qone.io/testing/selenium/jenkins/osx/2015/08/15/selenium-service-osx.html</link>
@@ -55,7 +79,7 @@ Apple&#39;s EULA states that you can install your copy on your actual Apple-hard
 <span class="nt">&lt;/dict&gt;</span>
 <span class="nt">&lt;/plist&gt;</span></code></pre></div>
 
-<p>create the log folder using sudo since root will be run the service</p>
+<p>create the log folder using sudo since root will run the service</p>
 
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>sudo mkdir -p /var/log/selenium/</code></pre></div>
 
@@ -80,7 +104,7 @@ rm googlechrome.dmg</code></pre></div>
 
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>brew install chromedriver</code></pre></div>
 
-<p>To make it possible to start running selenium tests on the server when using it as a Jenkins slave you need the user logged in that is running the tests. To get this working after reboot with no manual login you do the following. Open <code>System Preferences</code> &gt; <code>Security &amp; Privacy</code> &gt;<code>Click the lock to make changes</code> &gt; uncheck <code>Disable automatic login</code> . The other option is to run test remote on to this mac. </p>
+<p>To make it possible to start running selenium tests on the server you need the user logged with a active workspace. To get this working after reboot with no manual login you do the following. Open <code>System Preferences</code> &gt; <code>Security &amp; Privacy</code> &gt;<code>Click the lock to make changes</code> &gt; uncheck <code>Disable automatic login</code> .</p>
 
 <p>Source <a href="https://github.com/mad01/boilerplates/blob/master/osx/selenium.plist">selenium.plist</a> <a href="https://github.com/mad01/boilerplates/blob/master/osx/chrome-install.sh">chrome-install.sh</a></p>
 ]]></content:encoded>
@@ -823,6 +847,6 @@ sudo cp foo.py bar.py /usr/local/bin</code></pre></div>
 ]]></content:encoded>
       <dc:date>2015-03-04T00:00:00+01:00</dc:date>
     </item>
-    <dc:date>2015-08-15T00:00:00+02:00</dc:date>
+    <dc:date>2015-08-30T00:00:00+02:00</dc:date>
   </channel>
 </rss>
