@@ -4,9 +4,11 @@ title: about
 ---
 
 
-This is a tech blog by a software engineer working with test. It will be about things that is related to, software development, test automation, devops automation using docker, continuous delivery/integration using docker, and open source. Maby even some off topic things like craft beer and coffee.
+This is a tech blog by a software engineer working with test. It will be about things that is related to, software development, test automation, devops automation using docker, continuous delivery/integration using docker, and open source. Maby even some off topic things like craft beer and coffee. 
 
-Most of my current interessts is in docker, python, go, nosql, aws services, googles cloud platform services. that is most likely what will be in the comming posts for some time in the future.
+Most of my current interessts is in docker, ansible, python, go, nosql, AWS, GCE. that is most likely what will be in the comming posts for some time in the future.
+
+answer to the question what editor i am using: Vim
 
 this page is hosted using [github](https://github.com), on my [account](https://github.com/mad01). i have a goal to post a minimum of one time a week. 
 
