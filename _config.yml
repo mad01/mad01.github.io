@@ -5,7 +5,7 @@ meta_description: "the dev blog"
 markdown: redcarpet
 highlighter: pygments
 logo: false
-paginate: 10
+paginate: 6
 baseurl: /
 domain_name: 'http://qone.io'
 google_analytics: 'UA-60513025-1'
