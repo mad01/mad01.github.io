@@ -7,7 +7,7 @@ categories: protobuf python http
 
 The point of this is a smal example on how you could use protobuf to send data over http. In this example i will be using falcon for the server and a command line tool as the client. The example will just be a simple ping/pong a message and a channel sent to the server that will return pong and the message and channel sent. 
 
-lets first strat with the structure of the files is like the following. all files used can be found on github see source in the end of the post.
+lets first start with the structure of the files is like the following. all files used can be found on github see source in the end of the post.
 {% highlight bash %}
 protobuf
 ├── client.py
