@@ -48,7 +48,7 @@ message PingDocument {
 }
 {% endhighlight %}
 
-build the proto python file. you will get py\_proto\_pb2.py which is the protobuf python class file that you now can use to build a proto client and server
+to build the proto python file. you will get py\_proto\_pb2.py which is the protobuf python class file that you now can use to build a proto client and server
 {% highlight bash%}
 $ protoc --python_out=. lib/py_proto.proto
 {% endhighlight %}
