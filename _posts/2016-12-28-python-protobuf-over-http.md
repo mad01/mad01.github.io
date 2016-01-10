@@ -5,9 +5,9 @@ date: 2016-01-11
 categories: protobuf python http
 ---
 
-The point of this is a smal example on how you could get started with a client and server in python using protobuf to send data over http with some error handeling.
+The point of this is a smal example on how you could use protobuf to send data over http. In this example i will be using falcon for the server and a command line tool as the client. The example will just be a simple ping/pong a message and a channel sent to the server that will return pong and the message and channel sent. 
 
-lets first strat with the structure of the files is like the following.
+lets first strat with the structure of the files is like the following. all files used can be found on github see source in the end of the post.
 {% highlight bash %}
 protobuf
 ├── client.py
@@ -48,13 +48,13 @@ message PingDocument {
 }
 {% endhighlight %}
 
-build the proto python file. you will get py_proto_pb2.py which is the protobuf python class file that you now can use to build a proto client and server
+build the proto python file. you will get py\_proto\_pb2.py which is the protobuf python class file that you now can use to build a proto client and server
 {% highlight bash%}
 $ protoc --python_out=. lib/py_proto.proto
 {% endhighlight %}
 
 
-
+Server api. The server used the generated protobuf python file to parse the message and to encode the response.
 {% highlight python %}
 #!/usr/bin/env python3
 import falcon
@@ -85,49 +85,61 @@ class Ping(object):
             resp.data = cmd.SerializeToString()
 {% endhighlight %}
 
-server
+
+Server function made to run with gunicorn.
 {% highlight python %}
 #!/usr/bin/env python3
 import falcon
 from lib import server_api
-
 
 api = falcon.API()
 api.add_route('/api/ping', server_api.Ping())
 {% endhighlight %}
 
 
-tests
-{% highlight python %}
-#!/usr/bin/env python3
-import unittest
-from lib import client_api
-
-
-class TestClient(unittest.TestCase):
-
-    @classmethod
-    def setUpClass(self):
-        self.api = client_api.Client()
-
-    def test_ping(self):
-        msg = 'hello'
-        channel = 'foo'
-        cmd = self.api.send_ping(
-            msg=msg,
-            channel=channel,
-            pingId='PING'
-            )
-        self.assertEqual(cmd.ping.pingId, self.api.pingId('PONG'))
-        self.assertEqual(cmd.ping.msg, msg)
-        self.assertEqual(cmd.ping.channel, channel)
-
-if __name__ == '__main__':
-    unittest.main()
+Start the server by doing the following
+{% highlight bash %}
+$ gunicorn server:api
 {% endhighlight %}
 
 
-client
+Client api. Like in the server we use the same python generated proto file. To encode the messame to binary, and read the response.
+{% highlight python %}
+#!/usr/bin/env python3
+import requests
+from . import py_proto_pb2 as proto
+
+class Client(object):
+
+    def __init__(self):
+        self.session = requests.Session()
+        self.session.headers.update({
+            "Content-Type": "application/x-protobuf",
+            "Accept": "application/x-protobuf"
+        })
+
+    def pingId(self, ping):
+        return proto.PingIdDTO.Value(ping)
+
+    def build_url(self, urn):
+        url = 'http://%s:8000/%s' % ('127.0.0.1', urn)
+        return url
+
+    def send_ping(self, msg='', channel='', pingId=''):
+        url = self.build_url('api/ping')
+        command = proto.PingCommand()
+        command.ping.msg = str(msg)
+        command.ping.channel = str(channel)
+        command.ping.pingId = self.pingId(pingId)
+
+        res = self.session.post(url, data=command.SerializeToString())
+        cmd = proto.PingDocument()
+        cmd.ParseFromString(res.content)
+        return cmd
+{% endhighlight %}
+
+
+Client. Made as a command line tool to be able to just send some infor in and then print th response. You send PING which is id 1 and you should get back id 2 from the server
 {% highlight python %}
 #!/usr/bin/env python3
 import argparse
@@ -160,9 +172,5 @@ if __name__ == '__main__':
     main()
 {% endhighlight %}
 
-{% highlight bash %}
-$ gunicorn server:api
-{% endhighlight %}
 
-
-The example can be found here. [Source](https://github.com/mad01/examples/tree/proto/protobuf)
+The example can be found here. [Source](https://github.com/mad01/examples/tree/master/protobuf)
