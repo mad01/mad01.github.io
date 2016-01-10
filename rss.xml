@@ -8,7 +8,171 @@
     <title>qone.io</title>
     <link>http://qone.io</link>
     <description>the dev blog</description>
-    <pubDate>Sat, 14 Nov 2015 00:00:00 +0100</pubDate>
+    <pubDate>Mon, 11 Jan 2016 00:00:00 +0100</pubDate>
+    <item>
+      <title>python protobuf over http</title>
+      <link>http://qone.io/protobuf/python/http/2016/01/11/python-protobuf-over-http.html</link>
+      <description><![CDATA[The point of this is a smal example on how you could use protobuf to send data over http. In this example i will be using falcon for the server and a command line tool as the client. The example will just be a simple ping/pong a message and a channel sent to the server that will return pong and the message and channel sent. 
+]]></description>
+      <pubDate>Mon, 11 Jan 2016 00:00:00 +0100</pubDate>
+      <guid>http://qone.io/protobuf/python/http/2016/01/11/python-protobuf-over-http.html</guid>
+      <content:encoded><![CDATA[<p>The point of this is a smal example on how you could use protobuf to send data over http. In this example i will be using falcon for the server and a command line tool as the client. The example will just be a simple ping/pong a message and a channel sent to the server that will return pong and the message and channel sent. </p>
+
+<p>lets first start with the structure of the files is like the following. all files used can be found on github see source in the end of the post.</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">protobuf
+├── client.py
+├── lib
+│   ├── __init__.py
+│   ├── client_api.py
+│   ├── py_proto.proto
+│   ├── py_proto_pb2.py
+│   └── server_api.py
+├── requirements.txt
+├── server.py
+└── tests
+    └── test_proto.py</code></pre></div>
+
+<p>to get started we need a protobuf file that sets the format of messages that should be used.</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">package api<span class="p">;</span>
+
+enum PingIdDTO <span class="o">{</span>
+    <span class="nv">PING</span> <span class="o">=</span> 1<span class="p">;</span>
+    <span class="nv">PONG</span> <span class="o">=</span> 2<span class="p">;</span>
+<span class="o">}</span>
+
+message PingDTO <span class="o">{</span>
+    required string <span class="nv">msg</span> <span class="o">=</span> 1<span class="p">;</span>
+    required string <span class="nv">channel</span> <span class="o">=</span> 2<span class="p">;</span>
+    required PingIdDTO <span class="nv">pingId</span> <span class="o">=</span> 3<span class="p">;</span>
+<span class="o">}</span>
+
+message PingCommand <span class="o">{</span>
+    required PingDTO <span class="nv">ping</span> <span class="o">=</span> 1<span class="p">;</span>
+<span class="o">}</span>
+
+message PingDocument <span class="o">{</span>
+    required PingDTO <span class="nv">ping</span> <span class="o">=</span> 1<span class="p">;</span>
+<span class="o">}</span></code></pre></div>
+
+<p>build the proto python file. you will get py_proto_pb2.py which is the protobuf python class file that you now can use to build a proto client and server</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>protoc --python_out<span class="o">=</span>. lib/py_proto.proto</code></pre></div>
+
+<p>Server api. The server used the generated protobuf python file to parse the message and to encode the response.</p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="c">#!/usr/bin/env python3</span>
+<span class="kn">import</span> <span class="nn">falcon</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">py_proto_pb2</span> <span class="k">as</span> <span class="n">proto</span>
+
+<span class="k">def</span> <span class="nf">proto_http_type</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s">&#39;application/x-protobuf&#39;</span>
+
+<span class="k">class</span> <span class="nc">Ping</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proto</span> <span class="o">=</span> <span class="n">proto</span>
+
+    <span class="k">def</span> <span class="nf">on_post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">,</span> <span class="n">resp</span><span class="p">):</span>
+            <span class="n">command</span> <span class="o">=</span> <span class="n">proto</span><span class="o">.</span><span class="n">PingCommand</span><span class="p">()</span>
+            <span class="n">command</span><span class="o">.</span><span class="n">ParseFromString</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+
+            <span class="n">cmd</span> <span class="o">=</span> <span class="n">proto</span><span class="o">.</span><span class="n">PingDocument</span><span class="p">()</span>
+            <span class="n">cmd</span><span class="o">.</span><span class="n">ping</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">ping</span><span class="o">.</span><span class="n">msg</span>
+            <span class="n">cmd</span><span class="o">.</span><span class="n">ping</span><span class="o">.</span><span class="n">channel</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">ping</span><span class="o">.</span><span class="n">channel</span>
+            <span class="n">cmd</span><span class="o">.</span><span class="n">ping</span><span class="o">.</span><span class="n">pingId</span> <span class="o">=</span> <span class="n">proto</span><span class="o">.</span><span class="n">PONG</span>
+
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;msg: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">command</span><span class="o">.</span><span class="n">ping</span><span class="o">.</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39;channel: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">command</span><span class="o">.</span><span class="n">ping</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span>
+
+            <span class="n">resp</span><span class="o">.</span><span class="n">content_type</span> <span class="o">=</span> <span class="n">proto_http_type</span><span class="p">()</span>
+            <span class="n">resp</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">falcon</span><span class="o">.</span><span class="n">HTTP_201</span>
+            <span class="n">resp</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">cmd</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">()</span></code></pre></div>
+
+<p>Server function made to run with gunicorn.</p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="c">#!/usr/bin/env python3</span>
+<span class="kn">import</span> <span class="nn">falcon</span>
+<span class="kn">from</span> <span class="nn">lib</span> <span class="kn">import</span> <span class="n">server_api</span>
+
+<span class="n">api</span> <span class="o">=</span> <span class="n">falcon</span><span class="o">.</span><span class="n">API</span><span class="p">()</span>
+<span class="n">api</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="s">&#39;/api/ping&#39;</span><span class="p">,</span> <span class="n">server_api</span><span class="o">.</span><span class="n">Ping</span><span class="p">())</span></code></pre></div>
+
+<p>Start the server by doing the following</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>gunicorn server:api</code></pre></div>
+
+<p>Client api. Like in the server we use the same python generated proto file. To encode the messame to binary, and read the response.</p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="c">#!/usr/bin/env python3</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">py_proto_pb2</span> <span class="k">as</span> <span class="n">proto</span>
+
+<span class="k">class</span> <span class="nc">Client</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+            <span class="s">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s">&quot;application/x-protobuf&quot;</span><span class="p">,</span>
+            <span class="s">&quot;Accept&quot;</span><span class="p">:</span> <span class="s">&quot;application/x-protobuf&quot;</span>
+        <span class="p">})</span>
+
+    <span class="k">def</span> <span class="nf">pingId</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ping</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">proto</span><span class="o">.</span><span class="n">PingIdDTO</span><span class="o">.</span><span class="n">Value</span><span class="p">(</span><span class="n">ping</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">build_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">urn</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;http://</span><span class="si">%s</span><span class="s">:8000/</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="s">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">urn</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">url</span>
+
+    <span class="k">def</span> <span class="nf">send_ping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">pingId</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_url</span><span class="p">(</span><span class="s">&#39;api/ping&#39;</span><span class="p">)</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="n">proto</span><span class="o">.</span><span class="n">PingCommand</span><span class="p">()</span>
+        <span class="n">command</span><span class="o">.</span><span class="n">ping</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">command</span><span class="o">.</span><span class="n">ping</span><span class="o">.</span><span class="n">channel</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+        <span class="n">command</span><span class="o">.</span><span class="n">ping</span><span class="o">.</span><span class="n">pingId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pingId</span><span class="p">(</span><span class="n">pingId</span><span class="p">)</span>
+
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">command</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">())</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="n">proto</span><span class="o">.</span><span class="n">PingDocument</span><span class="p">()</span>
+        <span class="n">cmd</span><span class="o">.</span><span class="n">ParseFromString</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cmd</span></code></pre></div>
+
+<p>Client. Made as a command line tool to be able to just send some infor in and then print th response. You send PING which is id 1 and you should get back id 2 from the server</p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="c">#!/usr/bin/env python3</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">from</span> <span class="nn">lib</span> <span class="kn">import</span> <span class="n">client_api</span>
+
+<span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+    <span class="n">api</span> <span class="o">=</span> <span class="n">client_api</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">send_ping</span><span class="p">(</span>
+        <span class="n">msg</span><span class="o">=</span><span class="n">msg</span><span class="p">,</span>
+        <span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">,</span>
+        <span class="n">pingId</span><span class="o">=</span><span class="s">&#39;PING&#39;</span>
+        <span class="p">)</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;Response: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">api</span><span class="o">.</span><span class="n">pingId</span><span class="p">(</span><span class="n">cmd</span><span class="o">.</span><span class="n">ping</span><span class="o">.</span><span class="n">pingId</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;message sent: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">cmd</span><span class="o">.</span><span class="n">ping</span><span class="o">.</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;to channel: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">cmd</span><span class="o">.</span><span class="n">ping</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;command line tool send messages to a channel&#39;</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&#39;-m&#39;</span><span class="p">,</span> <span class="s">&#39;--message&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&#39;-c&#39;</span><span class="p">,</span> <span class="s">&#39;--channel&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="n">call</span><span class="p">(</span>
+        <span class="n">msg</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">message</span><span class="p">,</span>
+        <span class="n">channel</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">channel</span>
+        <span class="p">)</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span></code></pre></div>
+
+<p>The example can be found here. <a href="https://github.com/mad01/examples/tree/master/protobuf">Source</a></p>
+]]></content:encoded>
+      <dc:date>2016-01-11T00:00:00+01:00</dc:date>
+    </item>
     <item>
       <title>jenkins test result dashboard</title>
       <link>http://qone.io/jenkins/react/dashboard/testing/stats/2015/11/14/jenkins-test-dashboard.html</link>
@@ -20,7 +184,7 @@
 
 <p><img src="/imgs/dashi-demo.png" alt="dashboard img"></p>
 
-<p>The background to making the dashboard is as part of the on boarding at work we are able to do a small projekt. We are using Jenkins as the tool for our continuous integration tests like many others. Since most of the Jenkins plugins that exists for build information is not that pretty, it made a lot of since to do a minimalistic dashboard for the test results. And why not do something in React as the frontend rendering engine and python as the backend. The dashboard is also using redis cache for the result data, and in the docker stack haproxy as the in front. </p>
+<p>The background to making the dashboard is as part of the on boarding at work we are able to do a small projekt. We are using Jenkins as the tool for our continuous integration tests like many others. Since most of the Jenkins plugins that exists for build information is not that pretty, it made a lot of since to do a minimalistic dashboard for the test results. And why not do something in React as the frontend rendering engine and python as the backend. The dashboard is also using redis cache for the result data, and in the docker stack haproxy to terminate http on port 80. The frontend polls the backend every 15 sec for new data. </p>
 
 <p>To get up and running with the dashboard you have two options either you run it with docker using <code>make</code> and docker-compose to start the stack. Or you install the needed on the host you have and have it running like that.</p>
 
@@ -28,7 +192,7 @@
 
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>git clone https://github.com/gutro/dashi.git</code></pre></div>
 
-<p>copy the example config file and edit it to work you your Jenkins. Start with the Jenkins config, by adding the jenins host, followed by a user and the user token the transport type http or https, and the exact job name in Jenkins this is only tested when the name is &lt;name&gt;-&lt;name&gt;, add a shorter description that you like to see in the frontend cards. The the redis configuration, if you are running using docker just set the host to redis, and leave the rest.</p>
+<p>copy the example config file and edit it to work you your Jenkins. Start with the Jenkins config, by adding the jenins host, followed by a user and the user token the transport type http or https, and the exact job name in Jenkins this is only tested when the name is &lt;name&gt;-&lt;name&gt;, add a shorter description that you like to see in the frontend cards. The the redis configuration, if you are running using docker just set the host to redis, and leave the rest. the poll interval for collecting data from Jenkins is set by the poll_interval key the default is set to 10 sec. The redis data have a config value expire_time 30 default, if no data is in redis the backend will get data from Jenkins.</p>
 
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>cp example.config.yml config.yml</code></pre></div>
 
@@ -876,6 +1040,6 @@ sudo cp foo.py bar.py /usr/local/bin</code></pre></div>
 ]]></content:encoded>
       <dc:date>2015-03-04T00:00:00+01:00</dc:date>
     </item>
-    <dc:date>2015-11-14T00:00:00+01:00</dc:date>
+    <dc:date>2016-01-11T00:00:00+01:00</dc:date>
   </channel>
 </rss>
