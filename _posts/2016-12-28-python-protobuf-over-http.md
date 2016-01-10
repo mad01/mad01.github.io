@@ -60,10 +60,8 @@ $ protoc --python_out=. lib/py_proto.proto
 import falcon
 from . import py_proto_pb2 as proto
 
-
 def proto_http_type():
     return 'application/x-protobuf'
-
 
 class Ping(object):
 
@@ -78,6 +76,9 @@ class Ping(object):
             cmd.ping.msg = command.ping.msg
             cmd.ping.channel = command.ping.channel
             cmd.ping.pingId = proto.PONG
+
+            print('msg: %s' % command.ping.msg)
+            print('channel: %s' % command.ping.channel)
 
             resp.content_type = proto_http_type()
             resp.status = falcon.HTTP_201
@@ -126,9 +127,42 @@ if __name__ == '__main__':
 {% endhighlight %}
 
 
+client
+{% highlight python %}
+#!/usr/bin/env python3
+import argparse
+from lib import client_api
+
+def call(msg='', channel=''):
+    api = client_api.Client()
+    cmd = api.send_ping(
+        msg=msg,
+        channel=channel,
+        pingId='PING'
+        )
+
+    print('Response: %s' % api.pingId(cmd.ping.pingId))
+    print('message sent: %s' % cmd.ping.msg)
+    print('to channel: %s' % cmd.ping.channel)
+
+def main():
+    description = 'command line tool send messages to a channel'
+    parser = argparse.ArgumentParser(description)
+    parser.add_argument('-m', '--message', required=True)
+    parser.add_argument('-c', '--channel', required=True)
+    args = parser.parse_args()
+    call(
+        msg=args.message,
+        channel=args.channel
+        )
+
+if __name__ == '__main__':
+    main()
+{% endhighlight %}
+
 {% highlight bash %}
 $ gunicorn server:api
 {% endhighlight %}
 
 
-The example can be found here. [Source](https://github.com/mad01/examples)
+The example can be found here. [Source](https://github.com/mad01/examples/tree/proto/protobuf)
