@@ -55,8 +55,79 @@ $ protoc --python_out=. lib/py_proto.proto
 
 
 
-
 {% highlight python %}
+#!/usr/bin/env python3
+import falcon
+from . import py_proto_pb2 as proto
+
+
+def proto_http_type():
+    return 'application/x-protobuf'
+
+
+class Ping(object):
+
+    def __init__(self):
+        self.proto = proto
+
+    def on_post(self, req, resp):
+            command = proto.PingCommand()
+            command.ParseFromString(req.stream.read())
+
+            cmd = proto.PingDocument()
+            cmd.ping.msg = command.ping.msg
+            cmd.ping.channel = command.ping.channel
+            cmd.ping.pingId = proto.PONG
+
+            resp.content_type = proto_http_type()
+            resp.status = falcon.HTTP_201
+            resp.data = cmd.SerializeToString()
+{% endhighlight %}
+
+server
+{% highlight python %}
+#!/usr/bin/env python3
+import falcon
+from lib import server_api
+
+
+api = falcon.API()
+api.add_route('/api/ping', server_api.Ping())
+{% endhighlight %}
+
+
+tests
+{% highlight python %}
+#!/usr/bin/env python3
+import unittest
+from lib import client_api
+
+
+class TestClient(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(self):
+        self.api = client_api.Client()
+
+    def test_ping(self):
+        msg = 'hello'
+        channel = 'foo'
+        cmd = self.api.send_ping(
+            msg=msg,
+            channel=channel,
+            pingId='PING'
+            )
+        self.assertEqual(cmd.ping.pingId, self.api.pingId('PONG'))
+        self.assertEqual(cmd.ping.msg, msg)
+        self.assertEqual(cmd.ping.channel, channel)
+
+if __name__ == '__main__':
+    unittest.main()
+{% endhighlight %}
+
+
+{% highlight bash %}
+$ gunicorn server:api
 {% endhighlight %}
 
 
