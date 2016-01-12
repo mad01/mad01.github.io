@@ -5,9 +5,9 @@ date: 2016-01-11
 categories: protobuf python http
 ---
 
-The point of this is a smal example on how you could use protobuf to send data over http. In this example i will be using falcon for the server and a command line tool as the client. The example will just be a simple ping/pong a message and a channel sent to the server that will return pong and the message and channel sent. 
+The point of this is a smal example on how you could use protobuf to send data over http. In this example i will be using Python and the packet falcon for the server. A command line tool as the client. The example will just be a simple ping/pong containing a message, channel, and PING or PONG sent to the server. The server will respond with the same message and channel and a PONG.
 
-lets first start with the structure of the files is like the following. all files used can be found on github see source in the end of the post.
+lets first start with the structure of the files is like the following. all files used can be found on github see source in the end of the post. a note some in the source there is some extra code that is removed to not clutter the example.
 {% highlight bash %}
 protobuf
 ├── client.py
@@ -25,6 +25,7 @@ protobuf
 
 
 to get started we need a protobuf file that sets the format of messages that should be used.
+a enum is used to hold the name/value that we like for a pingId. a PingDTO that will hold the message values that we like in the PingDTO. We then use this PingDTO in the PingCommand and the PingDocument. The PingCommand will be used to send to the server and the response will be the PingDocument.
 {% highlight bash %}
 package api;
 
@@ -48,13 +49,13 @@ message PingDocument {
 }
 {% endhighlight %}
 
-to build the proto python file. you will get py\_proto\_pb2.py which is the protobuf python class file that you now can use to build a proto client and server
+to build the proto python file. you will get py\_proto\_pb2.py which is the protobuf python class file that you later  use to build a proto client and server.
 {% highlight bash%}
 $ protoc --python_out=. lib/py_proto.proto
 {% endhighlight %}
 
 
-Server api. The server used the generated protobuf python file to parse the message and to encode the response.
+Server api. The server uses the generated protobuf python file to parse the command sent, and to return the document to the client.
 {% highlight python %}
 #!/usr/bin/env python3
 import falcon
@@ -86,7 +87,7 @@ class Ping(object):
 {% endhighlight %}
 
 
-Server function made to run with gunicorn.
+Server function made to run the falcon app.
 {% highlight python %}
 #!/usr/bin/env python3
 import falcon
@@ -97,13 +98,13 @@ api.add_route('/api/ping', server_api.Ping())
 {% endhighlight %}
 
 
-Start the server by doing the following
+Starting the server by using gunicorn and calling the api falcon api
 {% highlight bash %}
 $ gunicorn server:api
 {% endhighlight %}
 
 
-Client api. Like in the server we use the same python generated proto file. To encode the messame to binary, and read the response.
+Client api. Like in the server we use the same python generated proto file. To send a command to the server and get back the response document that will be printed to stdout.
 {% highlight python %}
 #!/usr/bin/env python3
 import requests
@@ -139,7 +140,7 @@ class Client(object):
 {% endhighlight %}
 
 
-Client. Made as a command line tool to be able to just send some infor in and then print th response. You send PING which is id 1 and you should get back id 2 from the server
+Client made as a command line tool to be able to just send some commands and then print the response. You send PING which is id 1 and you should get back id 2 from the server
 {% highlight python %}
 #!/usr/bin/env python3
 import argparse
