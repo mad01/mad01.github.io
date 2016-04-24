@@ -8,17 +8,315 @@
     <title>qone.io</title>
     <link>http://qone.io</link>
     <description>the dev blog</description>
-    <pubDate>Mon, 11 Jan 2016 00:00:00 +0100</pubDate>
+    <pubDate>Sun, 24 Apr 2016 00:00:00 +0200</pubDate>
+    <item>
+      <title>python click bash zsh auto complete same files nested command groups</title>
+      <link>http://qone.io/python/bash/zsh/nested/2016/04/24/python-click-auto-complete-bash-zsh-nested.html</link>
+      <description><![CDATA[Sharing the same auto completion for zsh and bash. In zsh there is somthing called bashcompinit that can be used to share the same completion for bash and zsh. here is a small example project that will fix completion with command groups and nested commands.
+]]></description>
+      <pubDate>Sun, 24 Apr 2016 00:00:00 +0200</pubDate>
+      <guid>http://qone.io/python/bash/zsh/nested/2016/04/24/python-click-auto-complete-bash-zsh-nested.html</guid>
+      <content:encoded><![CDATA[<p>Sharing the same auto completion for zsh and bash. In zsh there is somthing called <code>bashcompinit</code> that can be used to share the same completion for bash and zsh. here is a small example project that will fix completion with command groups and nested commands.</p>
+
+<p>project structur</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">├── MANIFEST.in
+├── Makefile
+├── auto_compleate_install.sh
+├── ecli-complete-nested.sh
+├── ecli-nested
+├── ecli_nested_lib
+│   ├── __init__.py
+│   └── main.py
+├── requirements.txt
+└── setup.py</code></pre></div>
+
+<p>click example cli command</p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="c">#!/usr/bin/env python2</span>
+<span class="kn">import</span> <span class="nn">click</span>
+
+<span class="nd">@click.group</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">ecli</span><span class="p">():</span>
+    <span class="k">pass</span>
+
+<span class="nd">@ecli.group</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">cmd1</span><span class="p">():</span>
+    <span class="k">pass</span>
+
+<span class="nd">@ecli.group</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">cmd2</span><span class="p">():</span>
+    <span class="k">pass</span>
+
+<span class="nd">@cmd1.group</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">foo</span><span class="p">():</span>
+    <span class="k">pass</span>
+
+<span class="nd">@cmd2.group</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">bar</span><span class="p">():</span>
+    <span class="k">pass</span>
+
+<span class="n">ecli</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">cmd1</span><span class="p">)</span>
+<span class="n">ecli</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">cmd2</span><span class="p">)</span>
+
+<span class="n">cmd1</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
+<span class="n">cmd2</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">bar</span><span class="p">)</span>
+
+<span class="nd">@foo.command</span><span class="p">(</span><span class="s">&#39;do_thing&#39;</span><span class="p">)</span>
+<span class="nd">@click.option</span><span class="p">(</span><span class="s">&#39;-t&#39;</span><span class="p">,</span> <span class="s">&#39;--thing&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">foo_do_thing</span><span class="p">(</span><span class="n">thing</span><span class="p">):</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="n">thing</span><span class="p">)</span>
+
+<span class="nd">@bar.command</span><span class="p">(</span><span class="s">&#39;do_stuff&#39;</span><span class="p">)</span>
+<span class="nd">@click.option</span><span class="p">(</span><span class="s">&#39;-s&#39;</span><span class="p">,</span> <span class="s">&#39;--stuff&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">bar_do_stuff</span><span class="p">(</span><span class="n">stuff</span><span class="p">):</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="n">stuff</span><span class="p">)</span></code></pre></div>
+
+<p>install script that is run post install</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/usr/bin/env bash</span>
+<span class="k">if</span> <span class="o">[[</span> <span class="k">$(</span>basename <span class="nv">$SHELL</span><span class="k">)</span> <span class="o">=</span> <span class="s1">&#39;bash&#39;</span> <span class="o">]]</span><span class="p">;</span>
+<span class="k">then</span>
+    <span class="k">if</span> <span class="o">[</span> -f ~/.bashrc <span class="o">]</span><span class="p">;</span>
+    <span class="k">then</span>
+        <span class="nb">echo</span> <span class="s2">&quot;Installing bash autocompletion&quot;</span>
+        cp ecli-complete-nested.sh ~/.ecli-complete-nested.sh
+        grep -q <span class="s1">&#39;ecli-complete-nested&#39;</span> ~/.bashrc
+        <span class="k">if</span> <span class="o">[[</span> <span class="nv">$?</span> -ne <span class="m">0</span> <span class="o">]]</span><span class="p">;</span> <span class="k">then</span>
+            <span class="nb">echo</span> <span class="s2">&quot;&quot;</span> &gt;&gt; ~/.bashrc
+            <span class="nb">echo</span> <span class="s2">&quot;source ~/.ecli-complete-nested.sh&quot;</span> &gt;&gt; ~/.bashrc
+        <span class="k">fi</span>
+    <span class="k">fi</span>
+<span class="k">elif</span> <span class="o">[[</span> <span class="k">$(</span>basename <span class="nv">$SHELL</span><span class="k">)</span> <span class="o">=</span> <span class="s1">&#39;zsh&#39;</span> <span class="o">]]</span><span class="p">;</span>
+<span class="k">then</span>
+    <span class="k">if</span> <span class="o">[</span> -f ~/.zshrc <span class="o">]</span><span class="p">;</span>
+    <span class="k">then</span>
+        <span class="nb">echo</span> <span class="s2">&quot;Installing zsh autocompletion&quot;</span>
+        cp ecli-complete-nested.sh ~/.ecli-complete-nested.sh
+        grep -q <span class="s1">&#39;ecli-complete-nested&#39;</span> ~/.zshrc
+        <span class="k">if</span> <span class="o">[[</span> <span class="nv">$?</span> -ne <span class="m">0</span> <span class="o">]]</span><span class="p">;</span> <span class="k">then</span>
+            <span class="nb">echo</span> <span class="s2">&quot;&quot;</span> &gt;&gt; ~/.zshrc
+            <span class="nb">echo</span> <span class="s2">&quot;autoload bashcompinit&quot;</span> &gt;&gt; ~/.zshrc
+            <span class="nb">echo</span> <span class="s2">&quot;bashcompinit&quot;</span> &gt;&gt; ~/.zshrc
+            <span class="nb">echo</span> <span class="s2">&quot;source ~/.ecli-complete-nested.sh&quot;</span> &gt;&gt; ~/.zshrc
+        <span class="k">fi</span>
+    <span class="k">fi</span>
+<span class="k">fi</span></code></pre></div>
+
+<p>setup.py file that runs the post install with auto complete in zsh and bash</p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">pip.req</span> <span class="kn">import</span> <span class="n">parse_requirements</span>
+<span class="kn">from</span> <span class="nn">setuptools</span> <span class="kn">import</span> <span class="n">find_packages</span>
+<span class="kn">from</span> <span class="nn">setuptools</span> <span class="kn">import</span> <span class="n">setup</span>
+<span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">call</span>
+<span class="kn">from</span> <span class="nn">setuptools.command.install</span> <span class="kn">import</span> <span class="n">install</span> <span class="k">as</span> <span class="n">_install</span>
+
+<span class="n">install_requirements</span> <span class="o">=</span> <span class="n">parse_requirements</span><span class="p">(</span><span class="s">&#39;requirements.txt&#39;</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">requirements</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">ir</span><span class="o">.</span><span class="n">req</span><span class="p">)</span> <span class="k">for</span> <span class="n">ir</span> <span class="ow">in</span> <span class="n">install_requirements</span><span class="p">]</span>
+
+<span class="k">class</span> <span class="nc">install</span><span class="p">(</span><span class="n">_install</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__post_install</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">dir</span><span class="p">):</span>
+        <span class="n">call</span><span class="p">([</span><span class="s">&#39;./auto_compleate_install.sh&#39;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">_install</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__post_install</span><span class="p">,</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">install_lib</span><span class="p">,),</span>
+            <span class="n">msg</span><span class="o">=</span><span class="s">&quot;installing auto completion&quot;</span>
+            <span class="p">)</span>
+
+<span class="n">setup</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s">&#39;ecli_nested&#39;</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="s">&#39;0.1a1&#39;</span><span class="p">,</span>
+    <span class="n">author</span><span class="o">=</span><span class="s">u&#39;example&#39;</span><span class="p">,</span>
+    <span class="n">author_email</span><span class="o">=</span><span class="s">&#39;foo@example.com&#39;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s">&#39;Some description&#39;</span><span class="p">,</span>
+    <span class="n">packages</span><span class="o">=</span><span class="n">find_packages</span><span class="p">(),</span>
+    <span class="n">include_package_data</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">install_requires</span><span class="o">=</span><span class="n">requirements</span><span class="p">,</span>
+    <span class="n">entry_points</span><span class="o">=</span><span class="p">{</span>
+        <span class="s">&#39;console_scripts&#39;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s">&#39;ecli-nested=ecli_nested_lib.main:ecli&#39;</span><span class="p">,</span>
+        <span class="p">]},</span>
+    <span class="n">cmdclass</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;install&#39;</span><span class="p">:</span> <span class="n">install</span><span class="p">},</span>
+    <span class="p">)</span></code></pre></div>
+
+<p>completion file for bash that can be used with zsh</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">_ecli<span class="o">()</span>
+<span class="o">{</span>
+    <span class="nb">local </span>cur prev
+
+    <span class="nv">cur</span><span class="o">=</span><span class="k">${</span><span class="nv">COMP_WORDS</span><span class="p">[COMP_CWORD]</span><span class="k">}</span>
+    <span class="nv">prev</span><span class="o">=</span><span class="k">${</span><span class="nv">COMP_WORDS</span><span class="p">[COMP_CWORD-1]</span><span class="k">}</span>
+
+    <span class="k">case</span> <span class="k">${</span><span class="nv">COMP_CWORD</span><span class="k">}</span> in
+        1<span class="o">)</span>
+            <span class="nv">COMPREPLY</span><span class="o">=(</span><span class="k">$(</span><span class="nb">compgen</span> -W <span class="s2">&quot;cmd1 cmd2&quot;</span> <span class="k">${</span><span class="nv">cur</span><span class="k">})</span><span class="o">)</span>
+            <span class="p">;;</span>
+        2<span class="o">)</span>
+            <span class="k">case</span> <span class="k">${</span><span class="nv">prev</span><span class="k">}</span> in
+                cmd1<span class="o">)</span>
+                    <span class="nv">COMPREPLY</span><span class="o">=(</span><span class="k">$(</span><span class="nb">compgen</span> -W <span class="s2">&quot;foo&quot;</span> <span class="k">${</span><span class="nv">cur</span><span class="k">})</span><span class="o">)</span>
+                    <span class="p">;;</span>
+                cmd2<span class="o">)</span>
+                    <span class="nv">COMPREPLY</span><span class="o">=(</span><span class="k">$(</span><span class="nb">compgen</span> -W <span class="s2">&quot;bar&quot;</span> <span class="k">${</span><span class="nv">cur</span><span class="k">})</span><span class="o">)</span>
+                    <span class="p">;;</span>
+            <span class="k">esac</span>
+            <span class="p">;;</span>
+        3<span class="o">)</span>
+            <span class="k">case</span> <span class="k">${</span><span class="nv">prev</span><span class="k">}</span> in
+                foo<span class="o">)</span>
+                    <span class="nv">COMPREPLY</span><span class="o">=(</span><span class="k">$(</span><span class="nb">compgen</span> -W <span class="s2">&quot;do_thing&quot;</span> <span class="k">${</span><span class="nv">cur</span><span class="k">})</span><span class="o">)</span>
+                    <span class="p">;;</span>
+                bar<span class="o">)</span>
+                    <span class="nv">COMPREPLY</span><span class="o">=(</span><span class="k">$(</span><span class="nb">compgen</span> -W <span class="s2">&quot;do_stuff&quot;</span> <span class="k">${</span><span class="nv">cur</span><span class="k">})</span><span class="o">)</span>
+                    <span class="p">;;</span>
+            <span class="k">esac</span>
+            <span class="p">;;</span>
+        *<span class="o">)</span>
+            <span class="nv">COMPREPLY</span><span class="o">=()</span>
+            <span class="p">;;</span>
+    <span class="k">esac</span>
+<span class="o">}</span>
+
+<span class="nb">complete</span> -F _ecli ecli<span class="se">\-</span>nested</code></pre></div>
+
+<p>The example can be found here. <a href="https://github.com/mad01/examples/tree/master/cli_nested">Source</a></p>
+]]></content:encoded>
+      <dc:date>2016-04-24T00:00:00+02:00</dc:date>
+    </item>
+    <item>
+      <title>python click bash zsh auto complete same files</title>
+      <link>http://qone.io/python/bash/zsh/2016/04/24/python-click-auto-complete-bash-zsh.html</link>
+      <description><![CDATA[Sharing the same auto completion for zsh and bash. In zsh there is somthing called bashcompinit that can be used to share the same completion for bash and zsh. here is a small example project that will fix completion for you when you are not using a nested command structure. see next post about nested completion for bash/zsh
+]]></description>
+      <pubDate>Sun, 24 Apr 2016 00:00:00 +0200</pubDate>
+      <guid>http://qone.io/python/bash/zsh/2016/04/24/python-click-auto-complete-bash-zsh.html</guid>
+      <content:encoded><![CDATA[<p>Sharing the same auto completion for zsh and bash. In zsh there is somthing called <code>bashcompinit</code> that can be used to share the same completion for bash and zsh. here is a small example project that will fix completion for you when you are not using a nested command structure. see next post about nested completion for bash/zsh</p>
+
+<p>project structur</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">├── MANIFEST.in
+├── Makefile
+├── auto_compleate_install.sh
+├── ecli
+├── ecli_lib
+│   ├── __init__.py
+│   └── main.py
+├── requirements.txt
+└── setup.py</code></pre></div>
+
+<p>click example cli command</p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="c">#!/usr/bin/env python2</span>
+<span class="kn">import</span> <span class="nn">click</span>
+
+<span class="nd">@click.group</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">ecli</span><span class="p">():</span>
+    <span class="k">pass</span>
+
+<span class="nd">@click.command</span><span class="p">(</span><span class="s">&#39;thing&#39;</span><span class="p">)</span>
+<span class="nd">@click.option</span><span class="p">(</span><span class="s">&#39;-t&#39;</span><span class="p">,</span> <span class="s">&#39;--thing&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">bar</span><span class="p">(</span><span class="n">thing</span><span class="p">):</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="n">thing</span><span class="p">)</span>
+
+<span class="nd">@click.command</span><span class="p">(</span><span class="s">&#39;stuff&#39;</span><span class="p">)</span>
+<span class="nd">@click.option</span><span class="p">(</span><span class="s">&#39;-s&#39;</span><span class="p">,</span> <span class="s">&#39;--stuff&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">stuff</span><span class="p">):</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="n">stuff</span><span class="p">)</span>
+
+<span class="n">ecli</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
+<span class="n">ecli</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">bar</span><span class="p">)</span></code></pre></div>
+
+<p>install script that is run post install</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/usr/bin/env bash</span>
+<span class="k">if</span> <span class="o">[[</span> <span class="k">$(</span>basename <span class="nv">$SHELL</span><span class="k">)</span> <span class="o">=</span> <span class="s1">&#39;bash&#39;</span> <span class="o">]]</span><span class="p">;</span>
+<span class="k">then</span>
+    <span class="k">if</span> <span class="o">[</span> -f ~/.bashrc <span class="o">]</span><span class="p">;</span>
+    <span class="k">then</span>
+        <span class="nb">echo</span> <span class="s2">&quot;Installing bash autocompletion...&quot;</span>
+        grep -q <span class="s1">&#39;ecli-autocompletion&#39;</span> ~/.bashrc
+        <span class="k">if</span> <span class="o">[[</span> <span class="nv">$?</span> -ne <span class="m">0</span> <span class="o">]]</span><span class="p">;</span> <span class="k">then</span>
+            <span class="nb">echo</span> <span class="s2">&quot;&quot;</span> &gt;&gt; ~/.bashrc
+            <span class="nb">echo</span> <span class="s1">&#39;eval &quot;$(_ECLI_COMPLETE=source ecli)&quot;&#39;</span> &gt;&gt; ~/.ecli-autocompletion.sh
+            <span class="nb">echo</span> <span class="s2">&quot;source ~/.ecli-autocompletion.sh&quot;</span> &gt;&gt; ~/.bashrc
+            <span class="nb">echo</span> <span class="s2">&quot;source ~/.ecli-complete.sh&quot;</span> &gt;&gt; ~/.bashrc
+        <span class="k">fi</span>
+    <span class="k">fi</span>
+<span class="k">elif</span> <span class="o">[[</span> <span class="k">$(</span>basename <span class="nv">$SHELL</span><span class="k">)</span> <span class="o">=</span> <span class="s1">&#39;zsh&#39;</span> <span class="o">]]</span><span class="p">;</span>
+<span class="k">then</span>
+    <span class="k">if</span> <span class="o">[</span> -f ~/.zshrc <span class="o">]</span><span class="p">;</span>
+    <span class="k">then</span>
+        <span class="nb">echo</span> <span class="s2">&quot;Installing zsh autocompletion...&quot;</span>
+        grep -q <span class="s1">&#39;ecli-autocompletion&#39;</span> ~/.zshrc
+        <span class="k">if</span> <span class="o">[[</span> <span class="nv">$?</span> -ne <span class="m">0</span> <span class="o">]]</span><span class="p">;</span> <span class="k">then</span>
+            <span class="nb">echo</span> <span class="s2">&quot;&quot;</span> &gt;&gt; ~/.zshrc
+            <span class="nb">echo</span> <span class="s2">&quot;autoload bashcompinit&quot;</span> &gt;&gt; ~/.zshrc
+            <span class="nb">echo</span> <span class="s2">&quot;bashcompinit&quot;</span> &gt;&gt; ~/.zshrc
+            <span class="nb">echo</span> <span class="s1">&#39;eval &quot;$(_ECLI_COMPLETE=source ecli)&quot;&#39;</span> &gt;&gt; ~/.ecli-autocompletion.sh
+            <span class="nb">echo</span> <span class="s2">&quot;source ~/.ecli-autocompletion.sh&quot;</span> &gt;&gt; ~/.zshrc
+        <span class="k">fi</span>
+    <span class="k">fi</span>
+<span class="k">fi</span></code></pre></div>
+
+<p>setup.py file that runs the post install with auto complete in zsh and bash</p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">pip.req</span> <span class="kn">import</span> <span class="n">parse_requirements</span>
+<span class="kn">from</span> <span class="nn">setuptools</span> <span class="kn">import</span> <span class="n">find_packages</span>
+<span class="kn">from</span> <span class="nn">setuptools</span> <span class="kn">import</span> <span class="n">setup</span>
+<span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">call</span>
+<span class="kn">from</span> <span class="nn">setuptools.command.install</span> <span class="kn">import</span> <span class="n">install</span> <span class="k">as</span> <span class="n">_install</span>
+
+<span class="n">install_requirements</span> <span class="o">=</span> <span class="n">parse_requirements</span><span class="p">(</span><span class="s">&#39;requirements.txt&#39;</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">requirements</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">ir</span><span class="o">.</span><span class="n">req</span><span class="p">)</span> <span class="k">for</span> <span class="n">ir</span> <span class="ow">in</span> <span class="n">install_requirements</span><span class="p">]</span>
+
+<span class="k">class</span> <span class="nc">install</span><span class="p">(</span><span class="n">_install</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__post_install</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">dir</span><span class="p">):</span>
+        <span class="n">call</span><span class="p">([</span><span class="s">&#39;./auto_compleate_install.sh&#39;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">_install</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__post_install</span><span class="p">,</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">install_lib</span><span class="p">,),</span>
+            <span class="n">msg</span><span class="o">=</span><span class="s">&quot;installing auto completion&quot;</span>
+            <span class="p">)</span>
+
+<span class="n">setup</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s">&#39;ecli&#39;</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="s">&#39;0.1a2&#39;</span><span class="p">,</span>
+    <span class="n">author</span><span class="o">=</span><span class="s">u&#39;example&#39;</span><span class="p">,</span>
+    <span class="n">author_email</span><span class="o">=</span><span class="s">&#39;foo@example.com&#39;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s">&#39;Some description&#39;</span><span class="p">,</span>
+    <span class="n">packages</span><span class="o">=</span><span class="n">find_packages</span><span class="p">(),</span>
+    <span class="n">include_package_data</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">install_requires</span><span class="o">=</span><span class="n">requirements</span><span class="p">,</span>
+    <span class="n">entry_points</span><span class="o">=</span><span class="p">{</span>
+        <span class="s">&#39;console_scripts&#39;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s">&#39;ecli=ecli_lib.main:ecli&#39;</span><span class="p">,</span>
+        <span class="p">]},</span>
+    <span class="n">cmdclass</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;install&#39;</span><span class="p">:</span> <span class="n">install</span><span class="p">},</span>
+    <span class="p">)</span></code></pre></div>
+
+<p>The example can be found here. <a href="https://github.com/mad01/examples/tree/master/cli">Source</a></p>
+]]></content:encoded>
+      <dc:date>2016-04-24T00:00:00+02:00</dc:date>
+    </item>
     <item>
       <title>python protobuf over http</title>
       <link>http://qone.io/protobuf/python/http/2016/01/11/python-protobuf-over-http.html</link>
-      <description><![CDATA[The point of this is a smal example on how you could use protobuf to send data over http. In this example i will be using falcon for the server and a command line tool as the client. The example will just be a simple ping/pong a message and a channel sent to the server that will return pong and the message and channel sent. 
+      <description><![CDATA[The point of this is a smal example on how you could use protobuf to send data over http. In this example i will be using Python and the packet falcon for the server. A command line tool as the client. The example will just be a simple ping/pong containing a message, channel, and PING or PONG sent to the server. The server will respond with the same message and channel and a PONG.
 ]]></description>
       <pubDate>Mon, 11 Jan 2016 00:00:00 +0100</pubDate>
       <guid>http://qone.io/protobuf/python/http/2016/01/11/python-protobuf-over-http.html</guid>
-      <content:encoded><![CDATA[<p>The point of this is a smal example on how you could use protobuf to send data over http. In this example i will be using falcon for the server and a command line tool as the client. The example will just be a simple ping/pong a message and a channel sent to the server that will return pong and the message and channel sent. </p>
+      <content:encoded><![CDATA[<p>The point of this is a smal example on how you could use protobuf to send data over http. In this example i will be using Python and the packet falcon for the server. A command line tool as the client. The example will just be a simple ping/pong containing a message, channel, and PING or PONG sent to the server. The server will respond with the same message and channel and a PONG.</p>
 
-<p>lets first start with the structure of the files is like the following. all files used can be found on github see source in the end of the post.</p>
+<p>lets first start with the structure of the files is like the following. all files used can be found on github see source in the end of the post. a note some in the source there is some extra code that is removed to not clutter the example.</p>
 
 <div class="highlight"><pre><code class="language-bash" data-lang="bash">protobuf
 ├── client.py
@@ -33,7 +331,8 @@
 └── tests
     └── test_proto.py</code></pre></div>
 
-<p>to get started we need a protobuf file that sets the format of messages that should be used.</p>
+<p>to get started we need a protobuf file that sets the format of messages that should be used.
+a enum is used to hold the name/value that we like for a pingId. a PingDTO that will hold the message values that we like in the PingDTO. We then use this PingDTO in the PingCommand and the PingDocument. The PingCommand will be used to send to the server and the response will be the PingDocument.</p>
 
 <div class="highlight"><pre><code class="language-bash" data-lang="bash">package api<span class="p">;</span>
 
@@ -56,11 +355,11 @@ message PingDocument <span class="o">{</span>
     required PingDTO <span class="nv">ping</span> <span class="o">=</span> 1<span class="p">;</span>
 <span class="o">}</span></code></pre></div>
 
-<p>build the proto python file. you will get py_proto_pb2.py which is the protobuf python class file that you now can use to build a proto client and server</p>
+<p>to build the proto python file. you will get py_proto_pb2.py which is the protobuf python class file that you later  use to build a proto client and server.</p>
 
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>protoc --python_out<span class="o">=</span>. lib/py_proto.proto</code></pre></div>
 
-<p>Server api. The server used the generated protobuf python file to parse the message and to encode the response.</p>
+<p>Server api. The server uses the generated protobuf python file to parse the command sent, and to return the document to the client.</p>
 
 <div class="highlight"><pre><code class="language-python" data-lang="python"><span class="c">#!/usr/bin/env python3</span>
 <span class="kn">import</span> <span class="nn">falcon</span>
@@ -90,7 +389,7 @@ message PingDocument <span class="o">{</span>
             <span class="n">resp</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">falcon</span><span class="o">.</span><span class="n">HTTP_201</span>
             <span class="n">resp</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">cmd</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">()</span></code></pre></div>
 
-<p>Server function made to run with gunicorn.</p>
+<p>Server function made to run the falcon app.</p>
 
 <div class="highlight"><pre><code class="language-python" data-lang="python"><span class="c">#!/usr/bin/env python3</span>
 <span class="kn">import</span> <span class="nn">falcon</span>
@@ -99,11 +398,11 @@ message PingDocument <span class="o">{</span>
 <span class="n">api</span> <span class="o">=</span> <span class="n">falcon</span><span class="o">.</span><span class="n">API</span><span class="p">()</span>
 <span class="n">api</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="s">&#39;/api/ping&#39;</span><span class="p">,</span> <span class="n">server_api</span><span class="o">.</span><span class="n">Ping</span><span class="p">())</span></code></pre></div>
 
-<p>Start the server by doing the following</p>
+<p>Starting the server by using gunicorn and calling the api falcon api</p>
 
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>gunicorn server:api</code></pre></div>
 
-<p>Client api. Like in the server we use the same python generated proto file. To encode the messame to binary, and read the response.</p>
+<p>Client api. Like in the server we use the same python generated proto file. To send a command to the server and get back the response document that will be printed to stdout.</p>
 
 <div class="highlight"><pre><code class="language-python" data-lang="python"><span class="c">#!/usr/bin/env python3</span>
 <span class="kn">import</span> <span class="nn">requests</span>
@@ -137,7 +436,7 @@ message PingDocument <span class="o">{</span>
         <span class="n">cmd</span><span class="o">.</span><span class="n">ParseFromString</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">cmd</span></code></pre></div>
 
-<p>Client. Made as a command line tool to be able to just send some infor in and then print th response. You send PING which is id 1 and you should get back id 2 from the server</p>
+<p>Client made as a command line tool to be able to just send some commands and then print the response. You send PING which is id 1 and you should get back id 2 from the server</p>
 
 <div class="highlight"><pre><code class="language-python" data-lang="python"><span class="c">#!/usr/bin/env python3</span>
 <span class="kn">import</span> <span class="nn">argparse</span>
@@ -151,7 +450,7 @@ message PingDocument <span class="o">{</span>
         <span class="n">pingId</span><span class="o">=</span><span class="s">&#39;PING&#39;</span>
         <span class="p">)</span>
 
-    <span class="k">print</span><span class="p">(</span><span class="s">&#39;Response: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">api</span><span class="o">.</span><span class="n">pingId</span><span class="p">(</span><span class="n">cmd</span><span class="o">.</span><span class="n">ping</span><span class="o">.</span><span class="n">pingId</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;Response: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">cmd</span><span class="o">.</span><span class="n">ping</span><span class="o">.</span><span class="n">pingId</span><span class="p">)</span>
     <span class="k">print</span><span class="p">(</span><span class="s">&#39;message sent: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">cmd</span><span class="o">.</span><span class="n">ping</span><span class="o">.</span><span class="n">msg</span><span class="p">)</span>
     <span class="k">print</span><span class="p">(</span><span class="s">&#39;to channel: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">cmd</span><span class="o">.</span><span class="n">ping</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span>
 
@@ -1040,6 +1339,6 @@ sudo cp foo.py bar.py /usr/local/bin</code></pre></div>
 ]]></content:encoded>
       <dc:date>2015-03-04T00:00:00+01:00</dc:date>
     </item>
-    <dc:date>2016-01-11T00:00:00+01:00</dc:date>
+    <dc:date>2016-04-24T00:00:00+02:00</dc:date>
   </channel>
 </rss>
