@@ -8,7 +8,64 @@
     <title>qone.io</title>
     <link>http://qone.io</link>
     <description>the dev blog</description>
-    <pubDate>Sun, 24 Apr 2016 00:00:00 +0200</pubDate>
+    <pubDate>Sun, 05 Jun 2016 00:00:00 +0200</pubDate>
+    <item>
+      <title>why do we do need unit tests</title>
+      <link>http://qone.io/testing/unittest/2016/06/05/testing-with-unittess.html</link>
+      <description><![CDATA[You might be thinking well unit tests is kind of a obvious thing that you have when you are
+writhing code. If you do you are wrong. Not all developers want and can write unit tests.
+This is kind of interesting for me.
+]]></description>
+      <pubDate>Sun, 05 Jun 2016 00:00:00 +0200</pubDate>
+      <guid>http://qone.io/testing/unittest/2016/06/05/testing-with-unittess.html</guid>
+      <content:encoded><![CDATA[<p>You might be thinking well unit tests is kind of a obvious thing that you have when you are
+writhing code. If you do you are wrong. Not all developers want and can write unit tests.
+This is kind of interesting for me.</p>
+
+<p>Short about me. I am a software developer in test, i have been spending years on designing,
+test automation and writing tooling to help other developers to to be more efficient in
+finding issues in the code they deliver. And strategies around quality and testing. Mostly
+on the backend and infrastructure area. Also being part of the design phase of a service
+to help point out risky areas.</p>
+
+<p>There is a few questions i see that some comes up when unit tests are not obvious. They are:
+- 1. I don&#39;t know how to
+- 2. It slows me down, i.e I don&#39;t have time
+- 3. It&#39;s working so we don&#39;t need it</p>
+
+<p>Point 1
+Well then there is a few options that can help. Fist list do some pair programming, spend
+some time with the team or the developer that need some help getting started. And implement
+a few features together. During this it&#39;s easier to help steering the design of the features
+in a direction that makes them easy to test, like splitting code it small functions that are
+then more approachable since they should just do one thing. Mock all the thing that you are
+dependent on doing calls to external services.</p>
+
+<p>Point 2
+From the start writhing unit tests might be time consuming yes. But when you have everything
+in place and have tests for most of the code base. You will find that it saves you time, since 
+you will get broken tests fast if you broke something during development not in production. That
+is just embarrassing that is not something we what. There is also one big benefit that might not
+be to obvious. This is that it will be easier to grow the team that owns the service. It&#39;s a pain
+in the ass to get to a project as a new developer when there it no tests. The last thing to add 
+here is that. Adding tests will help you split the code in to smaller functions that is easier
+to add tests for and control. Which improves maintainability of the code in a team.</p>
+
+<p>Point 3
+Stating that it it&#39;s working it kind of a dumb ting to say. This is really hard to prove. 
+Event if the service looks like it&#39;s working you can&#39;t be entirely sure since you don&#39;t have
+tests for it there might be obvious bugs that you will have to spend a lot of time to
+trouble shot before you can fix it. Having tests is the key to having a stable service. And
+to be able to deploy to production with sanity some left.</p>
+
+<p>Unit testing is not that hard you just have to design and think <code>how do i test this function</code>
+during development. This might mean splitting a function in to few smaller functions.
+Awesome this means that you have succeeded and made the code more testable and maintainable</p>
+
+<p>-&gt; <img src="/imgs/test-all-the-things.png" alt="test all the things"> &lt;-</p>
+]]></content:encoded>
+      <dc:date>2016-06-05T00:00:00+02:00</dc:date>
+    </item>
     <item>
       <title>python click bash zsh auto complete same files nested command groups</title>
       <link>http://qone.io/python/bash/zsh/nested/2016/04/24/python-click-auto-complete-bash-zsh-nested.html</link>
@@ -1339,6 +1396,6 @@ sudo cp foo.py bar.py /usr/local/bin</code></pre></div>
 ]]></content:encoded>
       <dc:date>2015-03-04T00:00:00+01:00</dc:date>
     </item>
-    <dc:date>2016-04-24T00:00:00+02:00</dc:date>
+    <dc:date>2016-06-05T00:00:00+02:00</dc:date>
   </channel>
 </rss>

@@ -50,3 +50,5 @@ Unit testing is not that hard you just have to design and think `how do i test t
 during development. This might mean splitting a function in to few smaller functions.
 Awesome this means that you have succeeded and made the code more testable and maintainable
 
+
+-> ![test all the things](/imgs/test-all-the-things.png) <-
