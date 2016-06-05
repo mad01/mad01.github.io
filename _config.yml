@@ -1,6 +1,6 @@
 name: qone.io
-description: the dev blog
-meta_description: "the dev blog"
+description: yet another developer blog
+meta_description: "yet another developer blog"
 
 markdown: redcarpet
 highlighter: pygments
