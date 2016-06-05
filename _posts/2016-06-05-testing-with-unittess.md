@@ -16,10 +16,11 @@ finding issues in the code they deliver. And strategies around quality and testi
 on the backend and infrastructure area. Also being part of the design phase of a service
 to help point out risky areas.
 
-There is a few questions i see that some comes up when unit tests are not obvious. They are:
-- 1. I don't know how to
-- 2. It slows me down, i.e I don't have time
-- 3. It's working so we don't need it
+There is a few questions i see that some comes up when unit tests are not obvious. They are
+
+1. I don't know how to
+2. It slows me down, i.e I don't have time
+3. It's working so we don't need it
 
 Point 1
 Well then there is a few options that can help. Fist list do some pair programming, spend

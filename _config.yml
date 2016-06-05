@@ -2,7 +2,7 @@ name: qone.io
 description: yet another developer blog
 meta_description: "yet another developer blog"
 
-markdown: redcarpet
+markdown: kramdown
 highlighter: pygments
 logo: false
 paginate: 10
