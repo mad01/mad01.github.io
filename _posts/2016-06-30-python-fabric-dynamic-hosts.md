@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Fabric dynamic hosts tasks
-date: 2016-07-30
+late: 2016-06-30
 categories: python fabric fab dynamic hosts
 ---
 Using fabric with dynamic hosts. In the fabric documentation most of it is using examples and is assuming that you you have a static set of hosts. That is no longer the case when we are working with cloud and a dynamic amout of hosts. The way the fabric whant's you to run tasks is to use the `fabric.api.env` function to set the hosts you have. If you now whant to do this on the fly you have one option a function called `execute` avalible in `fabric.api` that takes a key `hosts` this key will be used to tell fabric to run on this hosts as if you had set `env.hosts` .
