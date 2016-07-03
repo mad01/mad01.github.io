@@ -20,11 +20,11 @@ example fabfile
 #!/usr/bin/env python2
 from fabric.api import task, parallel, run, execute
 
-def get_hosts(foo='', bar=''):
+def get_hosts():
     return ['10.0.0.1', '10.0.0.2']
 
 @parallel
-def _tail():
+def _tail(foo='', bar=''):
     try:
         run('sudo tail -f /var/log/*.log')
     except KeyboardInterrupt:
