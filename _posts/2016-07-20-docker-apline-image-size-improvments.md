@@ -4,16 +4,15 @@ title: Docker alpine smaller image footprint
 late: 2016-07-20
 categories: docker python python3 alpine linux golang go
 ---
-Working with docker images to minimize the footprint i.e the size if a image. There is a few things that you can do to get smaller images. I will show some examples for a small go and python3 service built in a debian and alpine linux based image to compare the result and the footprint that a image gets when you do it right. 
+Working with docker images to minimise the footprint i.e the size if a image. There is a few things that you can do to get smaller images. I will show some examples for a small go and python3 service built in a Debian and alpine linux based image to compare the result and the footprint that a image. 
 
-The key to building small docker images is only use `one` `RUN` step in the Dockerfile. Why you might think. Every RUN in docker is a layer. The layer will contain what you do in that layer like adding package cache. If you then remove the cache in a later RUN you will still have it in the paret layers. So what you do is use alof of `&&` in the same RUN and in the end remove the files and cache you done need. Selecting the base image will affect you the most when it comes to footprint. I will look on debian and alpine based images. 
+The key to building small docker images is only use `one` `RUN` step in the Dockerfile. Why you might think. Every RUN in docker is a layer. The layer will contain what you do in that layer like adding package cache. If you then remove the cache in a later RUN you will still have it in the parent layers. So what you do is use al lot of `&&` in the same RUN and in the end remove the files and cache you done need. Selecting the base image will affect you the most when it comes to footprint. I will look on Debian and alpine based images. 
 
 I will use the python official images as a reference like `python:3.5` that is based on jessie with a size of `694 MB`, and the Alpine Linux version `python:3.5-alpine` with a size of `73 MB` .
 
-One of Alpines key features i see other then the base size of `4.8 MB` , is `virtual package` it lets you assign packages to one or multiple virtual packages. The package is then used for builds for example and then you remove it when done. This means that you in a easy way can remove the dependencies you dont need globaly in the image. 
+One of Alpines key features i see other then the base size of `4.8 MB` , is `virtual package` it lets you assign packages to one or multiple virtual packages. When you are done just remove the virtual package.
 
-
-The referece app is a small rest service returning a 200 with `{"status": "OK"}` for both python and go.
+The reference app is a small rest service returning status 200 with a body containing json `{"status": "OK"}` for both python and go.
 
 Lets start with creating a image based on the `python:3.5` image with a starting size of `694 MB`, after build the result is `702.5 MB`
 {% highlight bash %}
@@ -55,7 +54,7 @@ EXPOSE 8080
 ENTRYPOINT gunicorn --bind 0.0.0.0:8080 pikachu.app:api
 {% endhighlight %}
 
-For go we will use tre base images, debian, alpine, and scratch. We need to compile go with it's deps. like this for example. The resulting file will be about `11 MB`
+For go we will use 3 base images, Debian, alpine, and scratch. We need to compile go with it's deps. like this for example. The resulting file will be about `11 MB`
 {% highlight bash %}
 $ CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
 {% endhighlight %}
@@ -84,7 +83,7 @@ CMD ["/main"]
 {% endhighlight %}
 
 
-The conclution is that if you need to get small images base it on `alpine` and use the official alpine images that most project like python, java have official version of. 
+The conclusion is that if you need to get small images base it on `alpine` and use the official alpine images that most project like python, java have official version of. 
 
 
 
