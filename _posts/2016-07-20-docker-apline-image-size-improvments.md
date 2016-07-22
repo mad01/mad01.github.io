@@ -6,7 +6,7 @@ categories: docker python python3 alpine linux golang go
 ---
 Working with docker images to minimise the footprint i.e the size if a image. There is a few things that you can do to get smaller images. I will show some examples for a small go and python3 service built in a Debian and alpine linux based image to compare the result and the footprint that a image. 
 
-The key to building small docker images is only use `one` `RUN` step in the Dockerfile. Why you might think. Every RUN in docker is a layer. The layer will contain what you do in that layer like adding package cache. If you then remove the cache in a later RUN you will still have it in the parent layers. So what you do is use al lot of `&&` in the same RUN and in the end remove the files and cache you done need. Selecting the base image will affect you the most when it comes to footprint. I will look on Debian and alpine based images. 
+The key to building small docker images is only use `one` `RUN` step in the Dockerfile. Why you might think. Every RUN in docker is a layer. The layer will contain what you do in that layer like adding package cache. If you then remove the cache in a later RUN you will still have it in the parent layers. So what you do is use al lot of `&&` in the same RUN and in the end remove the files and cache you don't need. Selecting the base image will affect you the most when it comes to footprint. I will look on Debian and alpine based images. 
 
 I will use the python official images as a reference like `python:3.5` that is based on jessie with a size of `694 MB`, and the Alpine Linux version `python:3.5-alpine` with a size of `73 MB` .
 
