@@ -54,7 +54,7 @@ EXPOSE 8080
 ENTRYPOINT gunicorn --bind 0.0.0.0:8080 pikachu.app:api
 {% endhighlight %}
 
-For go we will use 3 base images, Debian, alpine, and scratch. We need to compile go with it's deps. like this for example. The resulting file will be about `11 MB`
+For go we will use 3 base images, Debian, alpine, and scratch. We need to compile go with it's deps. The resulting file will be about `11 MB`
 {% highlight bash %}
 $ CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
 {% endhighlight %}
