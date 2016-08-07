@@ -8,7 +8,27 @@
     <title>qone.io</title>
     <link>http://qone.io</link>
     <description>yet another developer blog</description>
-    <pubDate>Wed, 20 Jul 2016 00:00:00 +0200</pubDate>
+    <pubDate>Sun, 07 Aug 2016 00:00:00 +0200</pubDate>
+    <item>
+      <title>killing the traditional quality assurance way of testing</title>
+      <link>http://qone.io/testing/strategies/2016/08/07/breaking-the-traditional-testing-trend.html</link>
+      <description><![CDATA[After years in testing roles it’s obvious that the traditional way of doing testing will no longer hold up. What i mena with the traditional way of testing is. Quality assurance, you have separate development and testing teams i.e QA teams. When the development team is done they deliver to QA and they do there work. QA follows a long and usually static test plan i and process, your not suppose to step outside the boundaries of the test plan or the process. This way of working is not only slow it disconnects the guys working with testing and development.
+
+]]></description>
+      <pubDate>Sun, 07 Aug 2016 00:00:00 +0200</pubDate>
+      <guid>http://qone.io/testing/strategies/2016/08/07/breaking-the-traditional-testing-trend.html</guid>
+      <content:encoded><![CDATA[<p>After years in testing roles it’s obvious that the traditional way of doing testing will no longer hold up. What i mena with the traditional way of testing is. Quality assurance, you have separate development and testing teams i.e QA teams. When the development team is done they deliver to QA and they do there work. QA follows a long and usually static test plan i and process, your not suppose to step outside the boundaries of the test plan or the process. This way of working is not only slow it disconnects the guys working with testing and development.</p>
+
+<p>So why it this so bad? This way of working tends do bring 1. Lots of processes around testing 2. Long test documents that is no longer valid the moment you are done 3. Management i.e C level likes to micro manage the testing work 4. Automation tends to be pushed off due to lack of time. 5. Testing becomes a repetitive which kills inovation 6. Testers are disconnected from development. 7. Company wide processes for tracking bugs and tasks that management can see and know what everyone is doing.</p>
+
+<p>The kind of companies that still works like this, follows the waterfall and itil way of working. They are not very agile and time from development start to running in production is long and can be from 1 - 6 months.</p>
+
+<p>Lets take a look on a more agile and efficient way of working. 1. Lets keep processes to a minimum and let every development team decide how they like to work. 2. There is no need for testing documents. let testers do exploratory testing. A product and service will always be under constant change so should testing. 3. Let testers do what they know best testing and exploring the product. 4. Automation is important to improve the time from development to delivery. 6. Have at least one tester per development team. No more QA team is needed. If testers are involved from start of development they can understand what the new feature is. And can from start help out and hilight risks in design and implementation since testers tend to know how the product is used better then developers. 7. Let the team that owns services track the way that works best for them, in favour of development speed.</p>
+
+<p>The most important things is to improve the time from development start to delivery and this way of working helps a lot to be able to deliver multiple times a day. It still needs a lot of testing, but testing i done during development not after. And a lot of the automation that is needed to deliver with some sanity left can be done during development.</p>
+]]></content:encoded>
+      <dc:date>2016-08-07T00:00:00+02:00</dc:date>
+    </item>
     <item>
       <title>Docker alpine smaller image footprint</title>
       <link>http://qone.io/docker/python/python3/alpine/linux/golang/go/2016/07/20/docker-apline-image-size-improvments.html</link>
@@ -19,7 +39,7 @@
       <guid>http://qone.io/docker/python/python3/alpine/linux/golang/go/2016/07/20/docker-apline-image-size-improvments.html</guid>
       <content:encoded><![CDATA[<p>Working with docker images to minimise the footprint i.e the size if a image. There is a few things that you can do to get smaller images. I will show some examples for a small go and python3 service built in a Debian and alpine linux based image to compare the result and the footprint that a image.</p>
 
-<p>The key to building small docker images is only use <code>one</code> <code>RUN</code> step in the Dockerfile. Why you might think. Every RUN in docker is a layer. The layer will contain what you do in that layer like adding package cache. If you then remove the cache in a later RUN you will still have it in the parent layers. So what you do is use al lot of <code>&amp;&amp;</code> in the same RUN and in the end remove the files and cache you done need. Selecting the base image will affect you the most when it comes to footprint. I will look on Debian and alpine based images.</p>
+<p>The key to building small docker images is only use <code>one</code> <code>RUN</code> step in the Dockerfile. Why you might think. Every RUN in docker is a layer. The layer will contain what you do in that layer like adding package cache. If you then remove the cache in a later RUN you will still have it in the parent layers. So what you do is use al lot of <code>&amp;&amp;</code> in the same RUN and in the end remove the files and cache you don’t need. Selecting the base image will affect you the most when it comes to footprint. I will look on Debian and alpine based images.</p>
 
 <p>I will use the python official images as a reference like <code>python:3.5</code> that is based on jessie with a size of <code>694 MB</code>, and the Alpine Linux version <code>python:3.5-alpine</code> with a size of <code>73 MB</code> .</p>
 
@@ -64,7 +84,7 @@ ADD . /app/pikachu
 EXPOSE 8080
 ENTRYPOINT gunicorn --bind 0.0.0.0:8080 pikachu.app:api</code></pre></div>
 
-<p>For go we will use 3 base images, Debian, alpine, and scratch. We need to compile go with it’s deps. like this for example. The resulting file will be about <code>11 MB</code></p>
+<p>For go we will use 3 base images, Debian, alpine, and scratch. We need to compile go with it’s deps. The resulting file will be about <code>11 MB</code></p>
 
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span><span class="nv">CGO_ENABLED</span><span class="o">=</span>0 <span class="nv">GOOS</span><span class="o">=</span>linux go build -a -installsuffix cgo -o main .</code></pre></div>
 
@@ -1554,6 +1574,6 @@ sudo cp foo.py bar.py /usr/local/bin</code></pre></div>
 ]]></content:encoded>
       <dc:date>2015-03-04T00:00:00+01:00</dc:date>
     </item>
-    <dc:date>2016-07-20T00:00:00+02:00</dc:date>
+    <dc:date>2016-08-07T00:00:00+02:00</dc:date>
   </channel>
 </rss>
