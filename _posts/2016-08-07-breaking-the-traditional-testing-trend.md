@@ -5,7 +5,7 @@ date: 2016-08-07
 categories: testing strategies
 ---
 
-After years in testing roles it's obvious that the traditional way of doing testing will no longer hold up. What i mena with the traditional way of testing is. Quality assurance, you have separate development and testing teams i.e QA teams. When the development team is done they deliver to QA and they do there work. QA follows a long and usually static test plan i and process, your not suppose to step outside the boundaries of the test plan or the process. This way of working is not only slow it disconnects the guys working with testing and development. 
+After years in testing roles it's obvious that the traditional way of doing testing will no longer hold up. What i mena with the traditional way of testing is. Quality assurance, you have separate development and testing teams i.e QA teams. When the development team is done they deliver to QA and they do there work. QA follows a long and usually static test plan and process, your not suppose to step outside the boundaries of the test plan or the process. This way of working is not only slow it disconnects the guys working with testing and development. 
 
 So why it this so bad? This way of working tends do bring 1. Lots of processes around testing 2. Long test documents that is no longer valid the moment you are done 3. Management i.e C level likes to micro manage the testing work 4. Automation tends to be pushed off due to lack of time. 5. Testing becomes a repetitive which kills inovation 6. Testers are disconnected from development. 7. Company wide processes for tracking bugs and tasks that management can see and know what everyone is doing.
 
