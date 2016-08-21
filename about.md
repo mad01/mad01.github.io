@@ -18,6 +18,7 @@ my book recommendations
 - [The 4-Hour Workweek](http://www.amazon.com/The-4-Hour-Workweek-Anywhere-Expanded/dp/0307465357) by Tim Ferriss
 - [JavaScript: The Good Parts](http://www.amazon.com/JavaScript-Good-Parts-Douglas-Crockford/dp/0596517742) by Douglas Crockford
 - [Effective Python: 59 Specific Ways to Write Better Python](http://www.amazon.com/Effective-Python-Specific-Software-Development/dp/0134034287) by Brett Slatkin
+- [The Effective Engineer](http://www.theeffectiveengineer.com/) by Edmond Lau
 
 find me here
 
