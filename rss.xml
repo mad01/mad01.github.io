@@ -8,16 +8,41 @@
     <title>qone.io</title>
     <link>http://qone.io</link>
     <description>yet another developer blog</description>
-    <pubDate>Sun, 07 Aug 2016 00:00:00 +0200</pubDate>
+    <pubDate>Sun, 21 Aug 2016 00:00:00 +0200</pubDate>
+    <item>
+      <title>lessons learned by running docker on mesos and aurora in production</title>
+      <link>http://qone.io/docker/mesos/aurora/2016/08/21/lessons-learned-by-running-docker-in-production.html</link>
+      <description><![CDATA[Short about how we run docker. The way we are running docker using aurora to scedule on mesos currently both on aws and on on premise. Every service have a aurora job defined. When a job is sceduled the service allocates resources from mesos and starts a job. That job is a set of one or multiple docker containers. This is all good and works ok.
+
+]]></description>
+      <pubDate>Sun, 21 Aug 2016 00:00:00 +0200</pubDate>
+      <guid>http://qone.io/docker/mesos/aurora/2016/08/21/lessons-learned-by-running-docker-in-production.html</guid>
+      <content:encoded><![CDATA[<p>Short about how we run docker. The way we are running docker using aurora to scedule on mesos currently both on aws and on on premise. Every service have a aurora job defined. When a job is sceduled the service allocates resources from mesos and starts a job. That job is a set of one or multiple docker containers. This is all good and works ok.</p>
+
+<p>The difficulties with running docker is not the running part. When we are working with life cycle of a service. This means that the amount of stopped containers, old version of images and unused images, and volumes, will start to eat up disk space. This is something that docker have not solved nicely yet. There is a lot of efforts from the community to come up with suggested solutions to purge junk that is building up while running it in production.</p>
+
+<p>The way we have solved this is to have a small service running things on every mesos node that is running docker. This service is called <code>janitor</code> . The <code>janitor</code> is a small python service that runs jobs like docker clean commands on sceduled intervalls to keep the mesos docker nodes in a healty state.</p>
+
+<p>The docker commands we are running currently are the following.</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>docker rmi <span class="k">$(</span>docker images -a -q<span class="k">)</span></code></pre></div>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>docker rm -v <span class="k">$(</span>docker ps -a -q -f <span class="nv">status</span><span class="o">=</span>exited<span class="k">)</span></code></pre></div>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>docker rmi <span class="k">$(</span>docker images -f <span class="s2">"dangling=true"</span> -q<span class="k">)</span></code></pre></div>
+
+]]></content:encoded>
+      <dc:date>2016-08-21T00:00:00+02:00</dc:date>
+    </item>
     <item>
       <title>killing the traditional quality assurance way of testing</title>
       <link>http://qone.io/testing/strategies/2016/08/07/breaking-the-traditional-testing-trend.html</link>
-      <description><![CDATA[After years in testing roles it’s obvious that the traditional way of doing testing will no longer hold up. What i mena with the traditional way of testing is. Quality assurance, you have separate development and testing teams i.e QA teams. When the development team is done they deliver to QA and they do there work. QA follows a long and usually static test plan i and process, your not suppose to step outside the boundaries of the test plan or the process. This way of working is not only slow it disconnects the guys working with testing and development.
+      <description><![CDATA[After years in testing roles it’s obvious that the traditional way of doing testing will no longer hold up. What i mena with the traditional way of testing is. Quality assurance, you have separate development and testing teams i.e QA teams. When the development team is done they deliver to QA and they do there work. QA follows a long and usually static test plan and process, your not suppose to step outside the boundaries of the test plan or the process. This way of working is not only slow it disconnects the guys working with testing and development.
 
 ]]></description>
       <pubDate>Sun, 07 Aug 2016 00:00:00 +0200</pubDate>
       <guid>http://qone.io/testing/strategies/2016/08/07/breaking-the-traditional-testing-trend.html</guid>
-      <content:encoded><![CDATA[<p>After years in testing roles it’s obvious that the traditional way of doing testing will no longer hold up. What i mena with the traditional way of testing is. Quality assurance, you have separate development and testing teams i.e QA teams. When the development team is done they deliver to QA and they do there work. QA follows a long and usually static test plan i and process, your not suppose to step outside the boundaries of the test plan or the process. This way of working is not only slow it disconnects the guys working with testing and development.</p>
+      <content:encoded><![CDATA[<p>After years in testing roles it’s obvious that the traditional way of doing testing will no longer hold up. What i mena with the traditional way of testing is. Quality assurance, you have separate development and testing teams i.e QA teams. When the development team is done they deliver to QA and they do there work. QA follows a long and usually static test plan and process, your not suppose to step outside the boundaries of the test plan or the process. This way of working is not only slow it disconnects the guys working with testing and development.</p>
 
 <p>So why it this so bad? This way of working tends do bring 1. Lots of processes around testing 2. Long test documents that is no longer valid the moment you are done 3. Management i.e C level likes to micro manage the testing work 4. Automation tends to be pushed off due to lack of time. 5. Testing becomes a repetitive which kills inovation 6. Testers are disconnected from development. 7. Company wide processes for tracking bugs and tasks that management can see and know what everyone is doing.</p>
 
@@ -1574,6 +1599,6 @@ sudo cp foo.py bar.py /usr/local/bin</code></pre></div>
 ]]></content:encoded>
       <dc:date>2015-03-04T00:00:00+01:00</dc:date>
     </item>
-    <dc:date>2016-08-07T00:00:00+02:00</dc:date>
+    <dc:date>2016-08-21T00:00:00+02:00</dc:date>
   </channel>
 </rss>
