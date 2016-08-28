@@ -8,7 +8,195 @@
     <title>qone.io</title>
     <link>http://qone.io</link>
     <description>yet another developer blog</description>
-    <pubDate>Sun, 21 Aug 2016 00:00:00 +0200</pubDate>
+    <pubDate>Sun, 28 Aug 2016 00:00:00 +0200</pubDate>
+    <item>
+      <title>simple prometheus exporter in python</title>
+      <link>http://qone.io/prometheus/exporter/python/2016/08/28/docker-prometheus-exporter-python.html</link>
+      <description><![CDATA[writing a simple prometheus exporter to collect metrics from a external system that needs monitoring. I will use the python official prometheus_client package for python and falcon to serve the exporter.
+
+]]></description>
+      <pubDate>Sun, 28 Aug 2016 00:00:00 +0200</pubDate>
+      <guid>http://qone.io/prometheus/exporter/python/2016/08/28/docker-prometheus-exporter-python.html</guid>
+      <content:encoded><![CDATA[<p>writing a simple prometheus exporter to collect metrics from a external system that needs monitoring. I will use the python official <code>prometheus_client</code> package for python and <code>falcon</code> to serve the exporter.</p>
+
+<p>project structure</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">├── Dockerfile
+├── Makefile
+├── prom-exporter
+├── prom_exporter
+│   ├── __init__.py
+│   ├── app.py
+│   ├── handler.py
+│   └── prom.py
+├── requirements.txt
+├── setup.cfg
+├── setup.py</code></pre></div>
+
+<p><code>app.py</code> starting the app with the python <code>click</code> framework to write a simple cli tool that takes some input to start the server</p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">click</span>
+<span class="kn">from</span> <span class="nn">prom_exporter.handler</span> <span class="kn">import</span> <span class="n">falcon_app</span>
+
+<span class="nd">@click.group</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">''</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">cli</span><span class="p">():</span>
+    <span class="k">pass</span>
+
+<span class="nd">@click.command</span><span class="p">()</span>
+<span class="nd">@click.option</span><span class="p">(</span><span class="s">'-s'</span><span class="p">,</span> <span class="s">'--service'</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+<span class="nd">@click.option</span><span class="p">(</span><span class="s">'-u'</span><span class="p">,</span> <span class="s">'--url'</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+<span class="nd">@click.option</span><span class="p">(</span><span class="s">'-p'</span><span class="p">,</span> <span class="s">'--port'</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+<span class="nd">@click.option</span><span class="p">(</span><span class="s">'-e'</span><span class="p">,</span> <span class="s">'--exclude'</span><span class="p">,</span> <span class="n">multiple</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="n">service</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">exclude</span><span class="p">):</span>
+    <span class="n">falcon_app</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">service</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">exclude</span><span class="p">))</span>
+
+<span class="n">cli</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
+    <span class="n">cli</span><span class="p">()</span></code></pre></div>
+
+<p><code>handler.py</code> the handler holds the metric class that will be serving the metrics to prometheus when it’s collecting metrics. The on_get function uses the <code>generate_latest</code> function from the prometheus package to generate the body of the request. the <code>generate_latest</code> takes a class with a collect function that yields <code>Metrics</code> objects that holds a list of samples that is used to generate the body. Every <code>Metrics</code> object can hold more then just one metric if you have multiple metrics that is from the same metric like. requets-p99 requets-p95 requets-p90 and so on you shoud not export this metrics using the current name. It’s a more optimal to do this by using the labels and by translating them to a generic metric name. If metrics is exported in a format like <code>response{latency="p99"}</code> <code>response{latency="p95"}</code> . You can new do a promQL like this <code>response{latency="p99"}</code> to access this metrics.</p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">falcon</span>
+
+<span class="kn">from</span> <span class="nn">wsgiref</span> <span class="kn">import</span> <span class="n">simple_server</span>
+<span class="kn">from</span> <span class="nn">prometheus_client.exposition</span> <span class="kn">import</span> <span class="n">CONTENT_TYPE_LATEST</span>
+<span class="kn">from</span> <span class="nn">prometheus_client.exposition</span> <span class="kn">import</span> <span class="n">generate_latest</span>
+
+<span class="kn">from</span> <span class="nn">prom_exporter.prom</span> <span class="kn">import</span> <span class="n">Collector</span>
+
+<span class="k">class</span> <span class="nc">metricHandler</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="s">''</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="s">''</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="nb">list</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_service</span> <span class="o">=</span> <span class="n">service</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_url</span> <span class="o">=</span> <span class="n">url</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_exclude</span> <span class="o">=</span> <span class="n">exclude</span>
+
+    <span class="k">def</span> <span class="nf">on_get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">,</span> <span class="n">resp</span><span class="p">):</span>
+        <span class="n">resp</span><span class="o">.</span><span class="n">set_header</span><span class="p">(</span><span class="s">'Content-Type'</span><span class="p">,</span> <span class="n">CONTENT_TYPE_LATEST</span><span class="p">)</span>
+        <span class="n">registry</span> <span class="o">=</span> <span class="n">Collector</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_url</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_service</span><span class="p">,</span>
+            <span class="n">exclude</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_exclude</span>
+            <span class="p">)</span>
+        <span class="n">collected_metric</span> <span class="o">=</span> <span class="n">generate_latest</span><span class="p">(</span><span class="n">registry</span><span class="p">)</span>
+        <span class="n">resp</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">collected_metric</span>
+
+<span class="k">def</span> <span class="nf">falcon_app</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">service</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9999</span><span class="p">,</span> <span class="n">addr</span><span class="o">=</span><span class="s">'0.0.0.0'</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="nb">list</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">'starting server http://127.0.0.1:{}/metrics'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">port</span><span class="p">))</span>
+    <span class="n">api</span> <span class="o">=</span> <span class="n">falcon</span><span class="o">.</span><span class="n">API</span><span class="p">()</span>
+    <span class="n">api</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span>
+        <span class="s">'/metrics'</span><span class="p">,</span>
+        <span class="n">metricHandler</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="n">service</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="n">exclude</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="n">httpd</span> <span class="o">=</span> <span class="n">simple_server</span><span class="o">.</span><span class="n">make_server</span><span class="p">(</span><span class="n">addr</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">api</span><span class="p">)</span>
+    <span class="n">httpd</span><span class="o">.</span><span class="n">serve_forever</span><span class="p">()</span></code></pre></div>
+
+<p><code>prom.py</code> A basic collector class with a collect function that gets called to generate the last metrics. it’s important to also allow for the option to exclude metrics when you are implementing a exporter to not add unwanted data. The <code>_get_metrics</code> function can just be replaced with a request to the system that you like to export metrics from to get prometheus native format. A suggestion here is to enrich the metrics like building a dict with the metrics you like to collect. By doing this you can select only a subset of the metrics the system exposes and you can enrich the metrics by adding extra labels and translate the metrics to a generic name used by all services to make the promQL’s more reusable over multiple service types.</p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">prometheus_client</span> <span class="kn">import</span> <span class="n">Metric</span>
+
+<span class="k">class</span> <span class="nc">Collector</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">service</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="nb">list</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_endpoint</span> <span class="o">=</span> <span class="n">endpoint</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_service</span> <span class="o">=</span> <span class="n">service</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_labels</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_labels</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_exclude</span> <span class="o">=</span> <span class="n">exclude</span>
+
+    <span class="k">def</span> <span class="nf">_set_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_labels</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s">'service'</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_service</span><span class="p">})</span>
+
+    <span class="k">def</span> <span class="nf">filter_exclude</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metrics</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">metrics</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exclude</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_get_metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">metrics</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">'requests'</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+            <span class="s">'requests_status_2xx'</span><span class="p">:</span> <span class="mi">90</span><span class="p">,</span>
+            <span class="s">'requests_status_4xx'</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+            <span class="s">'requests_status_5xx'</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
+            <span class="s">'uptime_sec'</span><span class="p">:</span> <span class="mi">123</span><span class="p">,</span>
+            <span class="s">'exclude_me'</span><span class="p">:</span> <span class="mi">1234</span><span class="p">,</span>
+            <span class="p">}</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exclude</span><span class="p">:</span>
+            <span class="n">metrics</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_exclude</span><span class="p">(</span><span class="n">metrics</span><span class="p">)</span>
+
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">metrics</span>
+
+    <span class="k">def</span> <span class="nf">collect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">time_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">metrics</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_metrics</span><span class="p">()</span>
+        <span class="n">time_stop</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="n">scrape_duration_seconds</span> <span class="o">=</span> <span class="p">(</span><span class="n">time_stop</span> <span class="o">-</span> <span class="n">time_start</span><span class="p">)</span>
+        <span class="n">time_labels</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">time_labels</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_labels</span><span class="p">)</span>
+
+        <span class="n">time_metric</span> <span class="o">=</span> <span class="n">Metric</span><span class="p">(</span>
+            <span class="s">'scrape_duration'</span><span class="p">,</span>
+            <span class="s">'service metric'</span><span class="p">,</span>
+            <span class="s">'gauge'</span>
+        <span class="p">)</span>
+        <span class="n">time_metric</span><span class="o">.</span><span class="n">add_sample</span><span class="p">(</span>
+            <span class="s">'scrape_duration_seconds'</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">scrape_duration_seconds</span><span class="p">,</span>
+            <span class="n">labels</span><span class="o">=</span><span class="n">time_labels</span>
+            <span class="p">)</span>
+        <span class="k">yield</span> <span class="n">time_metric</span>
+
+        <span class="k">if</span> <span class="n">metrics</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">metrics</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">metric</span> <span class="o">=</span> <span class="n">Metric</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="s">'counter'</span><span class="p">)</span>
+                <span class="n">labels</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">labels</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_labels</span><span class="p">)</span>
+                <span class="n">metric</span><span class="o">.</span><span class="n">add_sample</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">v</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">metric</span><span class="o">.</span><span class="n">samples</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">metric</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">pass</span></code></pre></div>
+
+<p>metric output when running the service</p>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># HELP scrape_duration service metric</span>
+<span class="c"># TYPE scrape_duration gauge</span>
+scrape_duration_seconds<span class="o">{</span><span class="nv">service</span><span class="o">=</span><span class="s2">"foo"</span><span class="o">}</span> 0.33550286293029785
+<span class="c"># HELP requests requests</span>
+<span class="c"># TYPE requests counter</span>
+requests<span class="o">{</span><span class="nv">service</span><span class="o">=</span><span class="s2">"foo"</span><span class="o">}</span> 100.0
+<span class="c"># HELP requests_status_2xx requests_status_2xx</span>
+<span class="c"># TYPE requests_status_2xx counter</span>
+requests_status_2xx<span class="o">{</span><span class="nv">service</span><span class="o">=</span><span class="s2">"foo"</span><span class="o">}</span> 90.0
+<span class="c"># HELP uptime_sec uptime_sec</span>
+<span class="c"># TYPE uptime_sec counter</span>
+uptime_sec<span class="o">{</span><span class="nv">service</span><span class="o">=</span><span class="s2">"foo"</span><span class="o">}</span> 123.0
+<span class="c"># HELP exclude_me exclude_me</span>
+<span class="c"># TYPE exclude_me counter</span>
+exclude_me<span class="o">{</span><span class="nv">service</span><span class="o">=</span><span class="s2">"foo"</span><span class="o">}</span> 1234.0
+<span class="c"># HELP requests_status_4xx requests_status_4xx</span>
+<span class="c"># TYPE requests_status_4xx counter</span>
+requests_status_4xx<span class="o">{</span><span class="nv">service</span><span class="o">=</span><span class="s2">"foo"</span><span class="o">}</span> 3.0
+<span class="c"># HELP requests_status_5xx requests_status_5xx</span>
+<span class="c"># TYPE requests_status_5xx counter</span>
+requests_status_5xx<span class="o">{</span><span class="nv">service</span><span class="o">=</span><span class="s2">"foo"</span><span class="o">}</span> 7.0</code></pre></div>
+
+<p>prometheus config to collect from the exporter</p>
+
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">scrape_configs</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">job_name</span><span class="pi">:</span> <span class="s1">'</span><span class="s">prom_exporter'</span>
+    <span class="s">scrape_interval</span><span class="pi">:</span> <span class="s">5s</span>
+    <span class="s">static_configs</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">targets</span><span class="pi">:</span> <span class="pi">[</span><span class="s1">'</span><span class="s">localhost:9999'</span><span class="pi">]</span></code></pre></div>
+
+<p>Python exporter source <a href="https://github.com/mad01/examples/tree/master/prometheus/python">Source</a></p>
+]]></content:encoded>
+      <dc:date>2016-08-28T00:00:00+02:00</dc:date>
+    </item>
     <item>
       <title>lessons learned by running docker on mesos and aurora in production</title>
       <link>http://qone.io/docker/mesos/aurora/2016/08/21/lessons-learned-by-running-docker-in-production.html</link>
@@ -1599,6 +1787,6 @@ sudo cp foo.py bar.py /usr/local/bin</code></pre></div>
 ]]></content:encoded>
       <dc:date>2015-03-04T00:00:00+01:00</dc:date>
     </item>
-    <dc:date>2016-08-21T00:00:00+02:00</dc:date>
+    <dc:date>2016-08-28T00:00:00+02:00</dc:date>
   </channel>
 </rss>
