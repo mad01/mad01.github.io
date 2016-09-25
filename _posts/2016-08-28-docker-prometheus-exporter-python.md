@@ -7,6 +7,10 @@ categories: prometheus exporter python
 
 writing a simple prometheus exporter to collect metrics from a external system that needs monitoring. I will use the python official `prometheus_client` package for python and `falcon` to serve the exporter.
 
+notise the following example is written with the assumtion that you are collection metrics from some other systems when multiple services is written in the same framwork and have a generic set of metrics. That is why there is a service label included. Normaly you should get the service name, from your service discovery.
+
+to just view the code jump to he source link in the end of the page. 
+
 project structure
 {% highlight bash %}
 ├── Dockerfile
@@ -47,7 +51,7 @@ if __name__ == '__main__':
 {% endhighlight %}
 
 
-`handler.py` the handler holds the metric class that will be serving the metrics to prometheus when it's collecting metrics. The on\_get function uses the `generate_latest` function from the prometheus package to generate the body of the request. the `generate_latest` takes a class with a collect function that yields `Metrics` objects that holds a list of samples that is used to generate the body. Every `Metrics` object can hold more then just one metric if you have multiple metrics that is from the same metric like. request-p99 request-p95 request-p90 and so on you shoud not export this metrics using the current name. It's a more optimal to do this by using the labels and by translating them to a generic metric name. If metrics is exported in a format like `request{latency="p99"}` `request{latency="p95"}` . You can new do a promQL like this `request{latency="p99"}` to access this metrics.
+`handler.py` the handler holds the metric class that will be serving the metrics to prometheus when it's collecting metrics. The on\_get function uses the `generate_latest` function from the prometheus package to generate the body of the request. the `generate_latest` takes a class with a collect function that yields `Metrics` objects that holds a list of samples that is used to generate the body. Every `Metrics` object can hold more then just one metric if you have multiple metrics that is from the same metric like. requets-p99 requets-p95 requets-p90 and so on you shoud not export this metrics using the current name. It's a more optimal to do this by using the labels and by translating them to a generic metric name. If metrics is exported in a format like `response{latency="p99"}` `response{latency="p95"}` . You can new do a promQL like this `response{latency="p99"}` to access this metrics.
 
 
 {% highlight python %}
@@ -126,25 +130,7 @@ class Collector(object):
         return metrics
 
     def collect(self):
-        time_start = time.time()
         metrics = self._get_metrics()
-        time_stop = time.time()
-
-        scrape_duration_seconds = (time_stop - time_start)
-        time_labels = {}
-        time_labels.update(self._labels)
-
-        time_metric = Metric(
-            'scrape_duration',
-            'service metric',
-            'gauge'
-        )
-        time_metric.add_sample(
-            'scrape_duration_seconds',
-            value=scrape_duration_seconds,
-            labels=time_labels
-            )
-        yield time_metric
 
         if metrics:
             for k, v in metrics.items():
@@ -159,11 +145,8 @@ class Collector(object):
                     pass
 {% endhighlight %}
 
-metric output when running the service
+metric output when running the exporter 
 {% highlight bash %}
-# HELP scrape_duration service metric
-# TYPE scrape_duration gauge
-scrape_duration_seconds{service="foo"} 0.33550286293029785
 # HELP requests requests
 # TYPE requests counter
 requests{service="foo"} 100.0
@@ -194,5 +177,5 @@ scrape_configs:
       - targets: ['localhost:9999']
 {% endhighlight %}
 
-
+edited: `2016-09-24`, 
 Python exporter source [Source](https://github.com/mad01/examples/tree/master/prometheus/python)
