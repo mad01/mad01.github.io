@@ -4,7 +4,7 @@ title: about
 ---
 
 
-This is a developer blog by a software engineer working cloud infrastructure. It will be about things that is related to, software development, test automation, devops automation using docker, continuous delivery/integration using docker, and open source. In i write about things that i encounter at work, things i use, and find interesting. 
+This is a developer blog by a software engineer working cloud infrastructure and PaaS. It will be about things that is related to, software development, test automation, devops automation using docker, continuous delivery/integration using docker, and open source. In i write about things that i encounter at work, things i use, and find interesting. 
 
 Most of my current interessts is in docker, prometheus, monitoring, ansible, python, go, AWS, GCE. that is most likely what will be in the comming posts for some time in the future.
 
