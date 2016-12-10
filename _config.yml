@@ -13,3 +13,6 @@ google_analytics: 'UA-60513025-1'
 # Details for the RSS feed generator
 url:            'http://qone.io'
 author:         'Alexander Brandstedt'
+
+gems:
+  - jekyll-paginate
