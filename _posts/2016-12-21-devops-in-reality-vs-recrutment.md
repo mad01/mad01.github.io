@@ -1,7 +1,7 @@
 ---
 layout: post
 title: what devops is and is not in recrutment and reality
-late: 2016-12-11
+late: 2016-12-21
 categories: devops software-engineering platform-engineering
 ---
 
