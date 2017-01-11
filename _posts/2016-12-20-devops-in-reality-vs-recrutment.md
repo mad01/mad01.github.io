@@ -1,6 +1,6 @@
 ---
 layout: post
-title: different sides of devops in recrutments and engineering
+title: different sides of devops in recrutment and engineering
 late: 2016-12-20
 categories: devops software-engineering platform-engineering
 ---
