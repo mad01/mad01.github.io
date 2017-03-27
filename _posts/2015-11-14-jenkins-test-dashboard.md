@@ -14,7 +14,7 @@ To get up and running with the dashboard you have two options either you run it 
 
 Install instructions for my minimal test result dashboard. pre install assumtions is that you have docker/docker-compose installed
 {% highlight bash %}
-$ git clone https://github.com/gutro/dashi.git
+$ git clone https://github.com/qoneci/dashi.git
 {% endhighlight bash %}
 
 copy the example config file and edit it to work you your Jenkins. Start with the Jenkins config, by adding the jenins host, followed by a user and the user token the transport type http or https, and the exact job name in Jenkins this is only tested when the name is \<name\>-\<name\>, add a shorter description that you like to see in the frontend cards. The the redis configuration, if you are running using docker just set the host to redis, and leave the rest. the poll interval for collecting data from Jenkins is set by the poll\_interval key the default is set to 10 sec. The redis data have a config value expire\_time 30 default, if no data is in redis the backend will get data from Jenkins.
