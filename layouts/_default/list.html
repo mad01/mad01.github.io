@@ -1,0 +1,36 @@
+{{ define "main" }}
+<header class="hero">
+  <h1 class="hero-title">{{ .Site.Title }}<span class="cursor">_</span></h1>
+  <p class="hero-tagline">{{ .Site.Params.description }}</p>
+</header>
+
+<section class="post-list">
+  {{ $paginator := .Paginate (where .Site.RegularPages "Section" "posts") }}
+  {{ range $paginator.Pages }}
+  <article class="post-item">
+    <time class="post-item-date" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006-01-02" }}</time>
+    <h2 class="post-item-title">
+      <a href="{{ .Permalink }}">{{ .Title }}</a>
+    </h2>
+    <p class="post-item-excerpt">{{ .Summary | plainify | truncate 160 }}</p>
+    {{ with .Params.tags }}
+    <div class="post-item-tags">
+      {{ range . }}<span class="tag">{{ . }}</span>{{ end }}
+    </div>
+    {{ end }}
+  </article>
+  {{ end }}
+
+  {{ if gt $paginator.TotalPages 1 }}
+  <nav class="pagination">
+    {{ if $paginator.HasPrev }}
+    <a class="pagination-link" href="{{ $paginator.Prev.URL }}">&larr; newer</a>
+    {{ end }}
+    <span class="pagination-current">{{ $paginator.PageNumber }}/{{ $paginator.TotalPages }}</span>
+    {{ if $paginator.HasNext }}
+    <a class="pagination-link" href="{{ $paginator.Next.URL }}">older &rarr;</a>
+    {{ end }}
+  </nav>
+  {{ end }}
+</section>
+{{ end }}
